@@ -53,7 +53,6 @@ public class Snappable : MonoBehaviour {
     }
 
     void OnMouseDrag() {
-        //Debug.Log("IN HERE");
         Plane plane = new Plane(Vector3.up, new Vector3(0, y, 0));
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         float distance;
@@ -64,10 +63,10 @@ public class Snappable : MonoBehaviour {
                     new Vector2(newPos.x, newPos.z));
                 transform.position = new Vector3(
                     snappedCoords.x,
-                    newPos.y, 
+                    y,
                     snappedCoords.y);
             } else {
-                transform.position = newPos;
+                transform.position = new Vector3(newPos.x, y, newPos.z);
             }
             var rb = GetComponent<Rigidbody>();
             if (!rb.Equals(null)) {

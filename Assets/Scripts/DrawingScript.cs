@@ -63,7 +63,7 @@ public class DrawingScript : MonoBehaviour {
         */
         Plane epplane = new Plane(
             Vector3.up,
-            new Vector3(0, 0.51f, 0));
+            new Vector3(0, drawingPlaneY, 0));
         Vector3 epplanepoint = ScreenToPlane(epplane);
         RaycastHit2D hit = Physics2D.Raycast(epplanepoint, Vector2.zero);
         /*
