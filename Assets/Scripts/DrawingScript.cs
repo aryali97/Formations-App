@@ -16,6 +16,7 @@ public class DrawingScript : MonoBehaviour {
     private Vector3 start;
     private Transform startPoint;
     private Transform endPoint;
+    private Endpoint epTemplate;
     private Transform currentLine; private Plane drawingPlane;
     private bool shouldDraw;
 
@@ -35,6 +36,7 @@ public class DrawingScript : MonoBehaviour {
             GlobalVars.snapLines.Add(new LineRepr(0, 2.0f * i));
             // GlobalVars.lines.Add(new Vector2(0.0f, 2.0f * i));
         }
+        epTemplate = Resources.Load<Endpoint>("Prefabs/Endpoint Circle");
 	}
 
     Vector3 ScreenToPlane(Plane plane) { Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -110,6 +112,25 @@ public class DrawingScript : MonoBehaviour {
             end.x - start.x,
             end.z - start.z) * Mathf.Rad2Deg;
         if (startPoint == null) {
+            /*
+            Endpoint startEndPoint = 
+                Instantiate(epTemplate,
+                            start,
+                            Quaternion.Euler(0,0,0));
+            Debug.Log("Start point ID: " + startEndPoint.Id);
+            */
+            Endpoint startEp =
+                Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
+            startPoint = startEp.transform;
+            Endpoint endEp =
+                Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
+            endPoint = endEp.transform;
+            currentLine = 
+                Instantiate(drawnLine, mid, Quaternion.Euler(0, angle, 0))
+                .transform;
+            Debug.Log("Points are " + startEp.Id +
+                      " and " + endEp.Id);
+            /*
             var startObj = 
                 Instantiate(endpoint, start, Quaternion.Euler(0, 0, 0));
             startPoint = startObj.transform;
@@ -119,15 +140,8 @@ public class DrawingScript : MonoBehaviour {
             currentLine = 
                 Instantiate(drawnLine, mid, Quaternion.Euler(0, angle, 0))
                 .transform;
-            /*
-            Debug.Log("Point ids are " + ((Endpoint)startObj).Id + " " +
-                      ((Endpoint)endObj).Id);
-            */
             Debug.Log("Points are " + startObj.GetInstanceID() +
                       " and " + endObj.GetInstanceID());
-            /*
-            GlobalVars.pointToLine.Add(endObj, currentLine);
-            GlobalVars.pointToLine.Add(startObj, currentLine);
             */
             GlobalVars.pointToLine.Add(endPoint.GetInstanceID(),
                                        currentLine.GetInstanceID());
