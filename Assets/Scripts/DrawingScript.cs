@@ -18,7 +18,8 @@ public class DrawingScript : MonoBehaviour {
     private Vector3 start;
     private Transform startPoint;
     private Transform endPoint;
-    private Transform currentLine; private Plane drawingPlane;
+    private IDable currentLine;
+    private Plane drawingPlane;
     private bool shouldDraw;
 
 	// Use this for initialization
@@ -57,47 +58,30 @@ public class DrawingScript : MonoBehaviour {
     }
 
     void OnMouseDown() {
-        /*
-        PointerEventData eventDataCurrentPos = new PointerEventData(
-            EventSystem.current);
-        eventDataCurrentPos.position = new Vector2(Input.mousePosition.x,
-                                                   Input.mousePosition.y);
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventDataCurrentPos, results);
-        Debug.Log("Results: " + results.Count);
-        */
         Plane epplane = new Plane(
             Vector3.up,
             new Vector3(0, drawingPlaneY, 0));
         Vector3 epplanepoint = ScreenToPlane(epplane);
         RaycastHit2D hit = Physics2D.Raycast(epplanepoint, Vector2.zero);
-        /*
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
-        */
         if (hit && hit.collider.name.Contains("Endpoint")) {
             shouldDraw = Vector3.Distance(hit.transform.position, epplanepoint) > 1.0f;
-            /*
-            shouldDraw = (Vector2.Distance(new Vector2(hit.transform.position.x,
-                                                       hit.transform.position.z),
-                                           new Vector2(epplanepoint.x,
-                                                       epplanepoint.z)))
-                                                       */
-            /*
-            Debug.Log("2D hit collider " + hit.collider.name);
-            Debug.Log("2D hit position " + hit.transform.position);
-            Debug.Log("2d hit shoudl've been " + epplanepoint);
-            Debug.Log("Distance is " + Vector3.Distance(hit.transform.position,
-                                                        epplanepoint));
-            */
         } else {
             shouldDraw = true;
         }
         Debug.Log("Should draw is " + shouldDraw);
-        //shouldDraw = (results.Count == 0) || !HitEndPoint();
         if (shouldDraw) {
             start = ScreenToPlane(drawingPlane);
         }
+    }
+
+    void AddLineToDicts(Endpoint startEp, Endpoint endEp, IDable line) {
+        GlobalVars.pointToLine.Add(startEp.id_, line.id_);
+        GlobalVars.pointToLine.Add(endEp.id_, line.id_);
+        GlobalVars.pointToPoint.Add(startEp.id_, endEp.id_);
+        GlobalVars.pointToPoint.Add(endEp.id_, startEp.id_);
+        GlobalVars.pointsList.Add(startEp);
+        GlobalVars.pointsList.Add(endEp);
+        GlobalVars.linesList.Add(line);
     }
 
     void OnMouseDrag() {
@@ -124,31 +108,19 @@ public class DrawingScript : MonoBehaviour {
             Endpoint endEp =
                 Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
             endPoint = endEp.transform;
-            IDable lineWithID = 
+            currentLine = 
                 Instantiate(lineTemplate, mid, Quaternion.Euler(0, angle, 0));
-            currentLine = lineWithID.transform;
-            /*
-                Instantiate(drawnLine, mid, Quaternion.Euler(0, angle, 0))
-                .transform;
-                */
             Debug.Log("Points are " + startEp.id_ +
                       " and " + endEp.id_);
-            Debug.Log("Line's ID " + lineWithID.id_);
-            GlobalVars.pointToLine.Add(endPoint.GetInstanceID(),
-                                       currentLine.GetInstanceID());
-            GlobalVars.pointToLine.Add(startPoint.GetInstanceID(),
-                                       currentLine.GetInstanceID());
-            GlobalVars.pointToPoint.Add(startPoint.GetInstanceID(),
-                                        endPoint.GetInstanceID());
-            GlobalVars.pointToPoint.Add(endPoint.GetInstanceID(),
-                                        startPoint.GetInstanceID());
+            Debug.Log("Line's ID " + currentLine.id_);
+            AddLineToDicts(startEp, endEp, currentLine);
         }
         endPoint.position = end;
-        currentLine.position = mid;
-        currentLine.rotation = Quaternion.Euler(0, angle, 0);
-        currentLine.localScale = new Vector3(
-            currentLine.localScale.x,
-            currentLine.localScale.y,
+        currentLine.transform.position = mid;
+        currentLine.transform.rotation = Quaternion.Euler(0, angle, 0);
+        currentLine.transform.localScale = new Vector3(
+            currentLine.transform.localScale.x,
+            currentLine.transform.localScale.y,
             dist/10.0f);
     }
 
@@ -161,6 +133,7 @@ public class DrawingScript : MonoBehaviour {
             if (end.x == start.x) {
                 GlobalVars.snapLines.Add(
                     new LineRepr(start.x, start.y, end.y));
+                GlobalVars.snapLines.Last().line_id_ = currentLine.id_;
             } else {
                 float m = (end.z - start.z)/(end.x - start.x);
                 // Y = mX + b
@@ -172,11 +145,13 @@ public class DrawingScript : MonoBehaviour {
                         b,
                         new Vector2(start.x, start.z),
                         new Vector2(end.x, end.z)));
+                GlobalVars.snapLines.Last().line_id_ = currentLine.id_;
             }
             startPoint = null;
             endPoint = null;
-            currentLine = null;
+            //currentLine = null;
         }
+        currentLine = null;
     }
 
     static Vector3 V2ToV3(Vector2 v2) {

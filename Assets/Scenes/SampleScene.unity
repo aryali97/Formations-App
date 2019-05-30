@@ -1619,7 +1619,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   drawingPlaneY: 0.6
   drawnLine: {fileID: 4137126319790580, guid: 0254ad580422840d8b4347bbc385d54c, type: 2}
-  endpoint: {fileID: 4341376002005824, guid: 5d6c413c8a692493682d8718901dbe13, type: 2}
 --- !u!64 &2143121240
 MeshCollider:
   m_ObjectHideFlags: 0

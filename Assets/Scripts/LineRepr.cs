@@ -7,6 +7,7 @@ public class LineRepr {
     public float b;
     public Vector2? start;
     public Vector2? end;
+    public int line_id_;
 
     public LineRepr(float b) {
         this.m = float.PositiveInfinity;
