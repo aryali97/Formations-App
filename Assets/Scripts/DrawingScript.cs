@@ -11,11 +11,13 @@ public class DrawingScript : MonoBehaviour {
 
     public float drawingPlaneY;
     public Transform drawnLine;
+
+    private Endpoint epTemplate;
+    private IDable lineTemplate;
     
     private Vector3 start;
     private Transform startPoint;
     private Transform endPoint;
-    private Endpoint epTemplate;
     private Transform currentLine; private Plane drawingPlane;
     private bool shouldDraw;
 
@@ -36,6 +38,9 @@ public class DrawingScript : MonoBehaviour {
             // GlobalVars.lines.Add(new Vector2(0.0f, 2.0f * i));
         }
         epTemplate = Resources.Load<Endpoint>("Prefabs/Endpoint Circle");
+        Debug.Log("EP Template: " + epTemplate);
+        lineTemplate = Resources.Load<IDable>("Prefabs/Drawn Line");
+        Debug.Log("Line template: " + lineTemplate);
 	}
 
     Vector3 ScreenToPlane(Plane plane) { Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -103,6 +108,8 @@ public class DrawingScript : MonoBehaviour {
         if (end == start) {
             return;
         }
+        Vector2 end2d = GlobalVars.SnapToLines(new Vector2(end.x, end.z), 0.3f);
+        end = new Vector3(end2d.x, end.y, end2d.y);
         Vector3 mid = (end + start)/2.0f;
         float dist = (float)Math.Sqrt(
             Math.Pow(start.x - end.x, 2) +
@@ -117,11 +124,16 @@ public class DrawingScript : MonoBehaviour {
             Endpoint endEp =
                 Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
             endPoint = endEp.transform;
-            currentLine = 
+            IDable lineWithID = 
+                Instantiate(lineTemplate, mid, Quaternion.Euler(0, angle, 0));
+            currentLine = lineWithID.transform;
+            /*
                 Instantiate(drawnLine, mid, Quaternion.Euler(0, angle, 0))
                 .transform;
-            Debug.Log("Points are " + startEp.Id +
-                      " and " + endEp.Id);
+                */
+            Debug.Log("Points are " + startEp.id_ +
+                      " and " + endEp.id_);
+            Debug.Log("Line's ID " + lineWithID.id_);
             GlobalVars.pointToLine.Add(endPoint.GetInstanceID(),
                                        currentLine.GetInstanceID());
             GlobalVars.pointToLine.Add(startPoint.GetInstanceID(),

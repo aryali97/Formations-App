@@ -22,7 +22,8 @@ public class Snappable : MonoBehaviour {
         Debug.Log("In MouseDown");
     }
 
-    Vector2 SnapToLines(Vector2 point) {
+    /*
+    static Vector2 SnapToLines(Vector2 point) {
         float bestDist = snapDist;
         Vector2 closestPoint = point;
         List<int> snapLineIndex = new List<int>();
@@ -51,6 +52,7 @@ public class Snappable : MonoBehaviour {
         }
         return closestPoint;
     }
+    */
 
     void OnMouseDrag() {
         Plane plane = new Plane(Vector3.up, new Vector3(0, y, 0));
@@ -59,8 +61,9 @@ public class Snappable : MonoBehaviour {
         if (plane.Raycast(ray, out distance)) {
             var newPos = ray.GetPoint(distance);
             if (snapToggle.isOn) {
-                var snappedCoords = SnapToLines(
-                    new Vector2(newPos.x, newPos.z));
+                var snappedCoords = GlobalVars.SnapToLines(
+                    new Vector2(newPos.x, newPos.z),
+                    snapDist);
                 transform.position = new Vector3(
                     snappedCoords.x,
                     y,

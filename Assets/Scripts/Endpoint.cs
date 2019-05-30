@@ -4,20 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class Endpoint : MonoBehaviour {
-
-    public int Id;
-
-    // Called when a script is being loaded
-    void Awake() {
-        Id = GlobalVars.nextPointId;
-        GlobalVars.nextPointId++;
-    }
+public class Endpoint : IDable {
 	
 	// Update is called once per frame
 	void OnMouseDrag() {
         int id = GetInstanceID();
-        //Debug.Log("OWN ID IS " + Id);
+        //Debug.Log("OWN ID IS " + id_);
         if (!GlobalVars.pointToPoint.ContainsKey(id) ||
             !GlobalVars.pointToLine.ContainsKey(id)) {
             return;
@@ -45,4 +37,8 @@ public class Endpoint : MonoBehaviour {
             planeT.localScale.y,
             dist/10.0f);
 	}
+
+    void OnMouseUp() {
+        Debug.Log("Dropped ep ID: " + id_);
+    }
 }
