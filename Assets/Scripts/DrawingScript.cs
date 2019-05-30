@@ -11,7 +11,6 @@ public class DrawingScript : MonoBehaviour {
 
     public float drawingPlaneY;
     public Transform drawnLine;
-    public Transform endpoint;
     
     private Vector3 start;
     private Transform startPoint;
@@ -112,13 +111,6 @@ public class DrawingScript : MonoBehaviour {
             end.x - start.x,
             end.z - start.z) * Mathf.Rad2Deg;
         if (startPoint == null) {
-            /*
-            Endpoint startEndPoint = 
-                Instantiate(epTemplate,
-                            start,
-                            Quaternion.Euler(0,0,0));
-            Debug.Log("Start point ID: " + startEndPoint.Id);
-            */
             Endpoint startEp =
                 Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
             startPoint = startEp.transform;
@@ -130,19 +122,6 @@ public class DrawingScript : MonoBehaviour {
                 .transform;
             Debug.Log("Points are " + startEp.Id +
                       " and " + endEp.Id);
-            /*
-            var startObj = 
-                Instantiate(endpoint, start, Quaternion.Euler(0, 0, 0));
-            startPoint = startObj.transform;
-            var endObj = 
-                Instantiate(endpoint, start, Quaternion.Euler(0, 0, 0));
-            endPoint = endObj.transform;
-            currentLine = 
-                Instantiate(drawnLine, mid, Quaternion.Euler(0, angle, 0))
-                .transform;
-            Debug.Log("Points are " + startObj.GetInstanceID() +
-                      " and " + endObj.GetInstanceID());
-            */
             GlobalVars.pointToLine.Add(endPoint.GetInstanceID(),
                                        currentLine.GetInstanceID());
             GlobalVars.pointToLine.Add(startPoint.GetInstanceID(),
