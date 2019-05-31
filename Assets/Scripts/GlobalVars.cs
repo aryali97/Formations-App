@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public static class GlobalVars {
     public static int nextId = 0;
@@ -123,7 +124,12 @@ public static class GlobalVars {
         float bestDist = snapDist;
         Vector2 closestPoint = point;
         List<int> snapLineIndex = new List<int>();
-        for (int i = 0; i < snapLines.Count; ++i) {
+        //TODO: Change if grid line number changes
+        Toggle lines_toggle = GameObject.FindWithTag("Shown Drawn Lines Toggle").
+            GetComponent<Toggle>();
+        int end_count = lines_toggle.isOn ? snapLines.Count : 8;
+        Debug.Log("End count is " + end_count);
+        for (int i = 0; i < end_count; ++i) {
             Vector2 newP = snapLines[i].ClosestPoint(point);
             float dist = Vector2.Distance(newP, point);
             if (dist < bestDist) {
@@ -133,8 +139,8 @@ public static class GlobalVars {
             }
         }
         bestDist = snapDist;
-        for (int i = 0; i < snapLines.Count; ++i) {
-            for (int j = i + 1; j < snapLines.Count; ++j) {
+        for (int i = 0; i < end_count; ++i) {
+            for (int j = i + 1; j < end_count; ++j) {
                 Vector2 newP = new Vector2(0, 0);
                 if (LineRepr.Intersection(
                         snapLines[i],

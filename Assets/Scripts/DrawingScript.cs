@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using UnityEditor;
 
 [ExecuteInEditMode]
@@ -11,6 +12,7 @@ public class DrawingScript : MonoBehaviour {
 
     public float drawingPlaneY;
     public Transform drawnLine;
+    public Toggle drawn_lines_toggle_;
 
     private Endpoint epTemplate;
     private IDable lineTemplate;
@@ -32,16 +34,12 @@ public class DrawingScript : MonoBehaviour {
             new Vector3(0, drawingPlaneY, 0));
         for (int i = -2; i <= 2; ++i) {
             GlobalVars.snapLines.Add(new LineRepr(i * 2.0f));
-            // GlobalVars.vertLines.Add(i * 2.0f);
         }
         for (int i = -1; i <= 1; ++i) {
             GlobalVars.snapLines.Add(new LineRepr(0, 2.0f * i));
-            // GlobalVars.lines.Add(new Vector2(0.0f, 2.0f * i));
         }
         epTemplate = Resources.Load<Endpoint>("Prefabs/Endpoint Circle");
-        Debug.Log("EP Template: " + epTemplate);
         lineTemplate = Resources.Load<IDable>("Prefabs/Drawn Line");
-        Debug.Log("Line template: " + lineTemplate);
 	}
 
     Vector3 ScreenToPlane(Plane plane) { Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -58,6 +56,11 @@ public class DrawingScript : MonoBehaviour {
     }
 
     void OnMouseDown() {
+        if (!drawn_lines_toggle_.isOn) {
+            shouldDraw = false;
+            return;
+        }
+
         Plane epplane = new Plane(
             Vector3.up,
             new Vector3(0, drawingPlaneY, 0));
