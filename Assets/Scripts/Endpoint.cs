@@ -6,24 +6,7 @@ using UnityEditor;
 
 public class Endpoint : IDable {
 
-    private Color hover_color_;
-    private Color orig_color_;
-    private Renderer renderer_;
-
     void Start() {
-        renderer_ = GetComponent<Renderer>();
-        hover_color_ = Color.magenta;
-        orig_color_ = renderer_.material.color;
-    }
-
-    // Mouse hovers over
-    void OnMouseEnter() {
-        renderer_.material.color = hover_color_;
-    }
-
-    // Mouse leaves hover
-    void OnMouseExit() {
-        renderer_.material.color = orig_color_;
     }
 	
 	// Update is called once per frame
