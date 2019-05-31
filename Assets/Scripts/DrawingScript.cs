@@ -71,7 +71,6 @@ public class DrawingScript : MonoBehaviour {
         } else {
             shouldDraw = true;
         }
-        Debug.Log("Should draw is " + shouldDraw);
         if (shouldDraw) {
             start = ScreenToPlane(drawingPlane);
         }
@@ -113,9 +112,6 @@ public class DrawingScript : MonoBehaviour {
             endPoint = endEp.transform;
             currentLine = 
                 Instantiate(lineTemplate, mid, Quaternion.Euler(0, angle, 0));
-            Debug.Log("Points are " + startEp.id_ +
-                      " and " + endEp.id_);
-            Debug.Log("Line's ID " + currentLine.id_);
             AddLineToDicts(startEp, endEp, currentLine);
         }
         endPoint.position = end;

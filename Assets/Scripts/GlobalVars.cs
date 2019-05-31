@@ -36,11 +36,8 @@ public static class GlobalVars {
                     * half_length + line.transform.position.z;
                 float p2x = line.transform.position.x - (p1x - line.transform.position.x);
                 float p2z = line.transform.position.z - (p1z - line.transform.position.z);
-                Debug.Log("Guess points are (" + p1x + ", " + p1z + ") and (" +
-                          p2x + ", " + p2z + ")");
                 float m = (p2z - p1z)/(p2x - p1x);
                 float b = p2z - m * p2x;
-                Debug.Log("M and B: " + m + ", " + b);
                 snapLines[i] = new LineRepr(
                     m,
                     b,
@@ -128,7 +125,6 @@ public static class GlobalVars {
         Toggle lines_toggle = GameObject.FindWithTag("Shown Drawn Lines Toggle").
             GetComponent<Toggle>();
         int end_count = lines_toggle.isOn ? snapLines.Count : 8;
-        Debug.Log("End count is " + end_count);
         for (int i = 0; i < end_count; ++i) {
             Vector2 newP = snapLines[i].ClosestPoint(point);
             float dist = Vector2.Distance(newP, point);
