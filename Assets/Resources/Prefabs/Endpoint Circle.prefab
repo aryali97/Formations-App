@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4341376002005824}
   - component: {fileID: 33402604369770390}
   - component: {fileID: 23440941607005122}
+  - component: {fileID: 114219802340395932}
   - component: {fileID: 114268694168718394}
   - component: {fileID: 114613624791475254}
   - component: {fileID: 58863927635292780}
@@ -101,6 +102,17 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.2
+--- !u!114 &114219802340395932
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1792029244390204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0ff57d6df1c341a1a414e6b53514914, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114268694168718394
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -124,4 +136,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0cbecd223e49487ea1f1f56ae6208d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Id: 0
+  id_: 0
