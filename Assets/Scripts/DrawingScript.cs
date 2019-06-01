@@ -77,13 +77,15 @@ public class DrawingScript : MonoBehaviour {
     }
 
     void AddLineToDicts(Endpoint startEp, Endpoint endEp, IDable line) {
+        GlobalVars.pointsList.Add(startEp);
+        GlobalVars.pointsList.Add(endEp);
+        GlobalVars.linesList.Add(line);
         GlobalVars.pointToLine.Add(startEp.id_, line.id_);
         GlobalVars.pointToLine.Add(endEp.id_, line.id_);
         GlobalVars.pointToPoint.Add(startEp.id_, endEp.id_);
         GlobalVars.pointToPoint.Add(endEp.id_, startEp.id_);
-        GlobalVars.pointsList.Add(startEp);
-        GlobalVars.pointsList.Add(endEp);
-        GlobalVars.linesList.Add(line);
+        GlobalVars.lineToPoints.Add(line.id_,
+            new Tuple<int, int>(startEp.id_, endEp.id_));
     }
 
     void OnMouseDrag() {

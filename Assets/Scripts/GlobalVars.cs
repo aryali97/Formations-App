@@ -14,7 +14,29 @@ public static class GlobalVars {
         new Dictionary<int, int>();
     public static Dictionary<int, int> pointToPoint =
         new Dictionary<int, int>();
+    public static Dictionary<int, Tuple<int, int>> lineToPoints =
+        new Dictionary<int, Tuple<int, int>>();
 
+
+    /*
+    Get Endpoints from IDable line
+    */
+    public static Tuple<Endpoint, Endpoint> GetEndpointsFromLine(IDable line) {
+        if (line == null) {
+            return null;
+        }
+        Endpoint ep1 = null;
+        Endpoint ep2 = null;
+        Tuple<int, int> pointIds = lineToPoints[line.id_];
+        foreach (Endpoint ep in pointsList) {
+            if (ep.id_ == pointIds.Item1) {
+                ep1 = ep;
+            } else if (ep.id_ == pointIds.Item2) {
+                ep2 = ep;
+            }
+        }
+        return new Tuple<Endpoint, Endpoint>(ep1, ep2);
+    }
 
     /*
     Update line representation from line

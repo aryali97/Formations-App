@@ -16,12 +16,12 @@ public class Hoverable : MonoBehaviour {
 	}
     
     // Mouse hovers
-    void OnMouseEnter() {
+    public void OnMouseEnter() {
         renderer.material.color = hoverColor;
     }
 
     // Mouse leaves hover
-    void OnMouseExit() {
+    public void OnMouseExit() {
         renderer.material.color = origColor;
     }
 }
