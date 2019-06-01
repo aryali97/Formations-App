@@ -42,19 +42,23 @@ public class IDable : MonoBehaviour {
         Plane plane = new Plane(Vector3.up, new Vector3(0, y, 0));
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         float distance;
-        if (plane.Raycast(ray, out distance)) {
-            var newPos = ray.GetPoint(distance);
-            var offset = newPos - transform.position + cent_offset;
-            transform.position = new Vector3(newPos.x + cent_offset.x, y, newPos.z + cent_offset.z);
-            var endpoints = GlobalVars.GetEndpointsFromLine(this);
-            endpoints.Item1.transform.position = 
-                endpoints.Item1.transform.position + offset;
-            endpoints.Item2.transform.position = 
-                endpoints.Item2.transform.position + offset;
+        if (!plane.Raycast(ray, out distance)) {
+            return;
         }
+        var newPos = ray.GetPoint(distance) + cent_offset;
+        var offset = newPos - transform.position;
+        transform.position = new Vector3(newPos.x,
+                                         y,
+                                         newPos.z);
+        var endpoints = GlobalVars.GetEndpointsFromLine(this);
+        var ep1Pos = endpoints.Item1.transform.position + offset;
+        var ep2Pos = endpoints.Item2.transform.position + offset;
+        endpoints.Item1.transform.position = ep1Pos;
+        endpoints.Item2.transform.position = ep2Pos;
     }
 
     void OnMouseUp() {
+        GlobalVars.UpdateLineRepr(this);
         // Hacky fix since drag may make the cursor not hover
         hover.OnMouseExit();
     }
