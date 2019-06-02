@@ -24,4 +24,13 @@ public class Hoverable : MonoBehaviour {
     public void OnMouseExit() {
         renderer.material.color = origColor;
     }
+
+    // Sometimes, dragging makes cursor not fly over leading to OnMouseExit
+    public void OnMouseDrag() {
+        renderer.material.color = hoverColor;
+    }
+
+    public void OnMouseUp() {
+        renderer.material.color = origColor;
+    }
 }
