@@ -14,12 +14,12 @@ public class DrawingScript : MonoBehaviour {
     public Toggle drawnLinesToggle;
 
     private Endpoint epTemplate;
-    private IDable lineTemplate;
+    private Segment lineTemplate;
     
     private Vector3 start;
     private bool drawingLine;
     private Transform endPoint;
-    private IDable currentLine;
+    private Segment currentLine;
     private IDable stageMarkerTemplate;
     private Plane drawingPlane;
     private bool shouldDraw;
@@ -72,7 +72,7 @@ public class DrawingScript : MonoBehaviour {
             SetUpMarkerLines();
         }
         epTemplate = Resources.Load<Endpoint>("Prefabs/Endpoint Circle");
-        lineTemplate = Resources.Load<IDable>("Prefabs/Drawn Line");
+        lineTemplate = Resources.Load<Segment>("Prefabs/Drawn Line");
 	}
 
     Vector3 ScreenToPlane(Plane plane) { Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -237,9 +237,10 @@ public class DrawingScript : MonoBehaviour {
                 Instantiate(lineTemplate, mid, Quaternion.Euler(0, angle, 0));
             SegmentHelper.AddSegmentToDicts(startEp, endEp, currentLine);
             /*
-            var segmentTuple = SegmentHelper.CreateSegment(start, end); 
-            endPoint = segmentTuple.endEp;
-            currentLine = segmentTuple.line;
+            Endpoint endEp = null, startEp = null;
+            SegmentHelper.CreateSegment(start, end, startEp, endEp, currentLine); 
+            endPoint = endEp.transform;
+            Debug.Log(endEp);
             */
             drawingLine = true;            
         }

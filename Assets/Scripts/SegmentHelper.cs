@@ -100,21 +100,22 @@ public static class SegmentHelper {
 
     /*
     Create drawn line and endpoints from vector3 endpoints
-    public static (Endpoint startEp, Endpoint endEp, IDable line) CreateSegment(
-        Vector3 start,
-        Vector3 end) {
+    public static void CreateSegment(Vector3 start, Vector3 end,
+        Endpoint startEp, Endpoint endEp, Segment line) {
         Vector3 mid = (end + start)/2.0f;
         float angle = Mathf.Atan2(
             end.x - start.x,
             end.z - start.z) * Mathf.Rad2Deg;
-        Endpoint startEp =
-            Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
-        Endpoint endEp =
-            Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
-        endPoint = endEp.transform;
-        IDable line = 
-            Instantiate(lineTemplate, mid, Quaternion.Euler(0, angle, 0));
-        return (startEp, endEp, line);
+        Endpoint epTemplate = Resources.Load<Endpoint>("Prefabs/Endpoint Circle");
+        startEp =
+            GameObject.Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
+        endEp =
+            GameObject.Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
+        line = 
+            GameObject.Instantiate(Resources.Load<Segment>("Prefabs/Drawn Line"),
+                mid,
+                Quaternion.Euler(0, angle, 0));
+        AddSegmentToDicts(startEp, endEp, line);
     }
     */
 
@@ -197,7 +198,7 @@ public static class SegmentHelper {
         int markerCount = GlobalVars.horizSecs + GlobalVars.vertSecs - 2;
         int endCount = linesToggle.isOn ? snapLines.Count : markerCount;
         for (int i = 0; i < endCount; ++i) {
-            if (i >= markerCount && snapLines[i].lineId == omitId) {
+            if (snapLines[i].lineId == omitId) {
                 continue;
             }
             Vector2 newP = snapLines[i].ClosestPoint(point);
@@ -210,11 +211,11 @@ public static class SegmentHelper {
         }
         bestDist = snapDist;
         for (int i = 0; i < endCount; ++i) {
-            if (i >= markerCount && snapLines[i].lineId == omitId) {
+            if (snapLines[i].lineId == omitId) {
                 continue;
             }
             for (int j = i + 1; j < endCount; ++j) {
-                if (j >= markerCount && snapLines[j].lineId == omitId) {
+                if (snapLines[j].lineId == omitId) {
                     continue;
                 }
                 Vector2 newP = new Vector2(0, 0);
