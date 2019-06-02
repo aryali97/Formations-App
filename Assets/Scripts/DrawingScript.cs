@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Collections; using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -24,6 +23,8 @@ public class DrawingScript : MonoBehaviour {
     private IDable stageMarkerTemplate;
     private Plane drawingPlane;
     private bool shouldDraw;
+    private bool rightClickDownInPrev;
+    private Vector3 rightMouseDownPos;
 
     void SetUpMarkerLines() {
         stageMarkerTemplate = Resources.Load<IDable>("Prefabs/Marker Line");
@@ -60,6 +61,7 @@ public class DrawingScript : MonoBehaviour {
         startPoint = null;
         endPoint = null;
         currentLine = null;
+        rightClickDownInPrev = false;
 	    drawingPlane = new Plane(
             Vector3.up,
             new Vector3(0, drawingPlaneY, 0));
@@ -188,5 +190,27 @@ public class DrawingScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+        MouseRightHandler();
 	}
+
+    void MouseRightHandler() {
+        if (Input.GetMouseButton(1)) {
+            if (!rightClickDownInPrev) {
+                rightMouseDownPos = Input.mousePosition;
+                Debug.Log("Right click down");
+                // OnMouseRightDown(); 
+            } else if (Input.mousePosition != rightMouseDownPos)  {
+                Debug.Log("Richt click drag");
+                // OnMouseRightDrag(); 
+            }
+            rightClickDownInPrev = true;
+        } else {
+            if (rightClickDownInPrev) {
+                Debug.Log("Right click up");
+                rightMouseDownPos = Vector3.zero; 
+                // OnMouseRightUp();
+            }
+            rightClickDownInPrev = false;
+        }
+    }
 }
