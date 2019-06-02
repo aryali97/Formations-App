@@ -33,10 +33,10 @@ public class DrawingScript : MonoBehaviour {
             Vector3.up,
             new Vector3(0, drawingPlaneY, 0));
         for (int i = -2; i <= 2; ++i) {
-            GlobalVars.snapLines.Add(new LineRepr(i * 2.0f));
+            SegmentHelper.snapLines.Add(new LineRepr(i * 2.0f));
         }
         for (int i = -1; i <= 1; ++i) {
-            GlobalVars.snapLines.Add(new LineRepr(0, 2.0f * i));
+            SegmentHelper.snapLines.Add(new LineRepr(0, 2.0f * i));
         }
         epTemplate = Resources.Load<Endpoint>("Prefabs/Endpoint Circle");
         lineTemplate = Resources.Load<IDable>("Prefabs/Drawn Line");
@@ -77,14 +77,14 @@ public class DrawingScript : MonoBehaviour {
     }
 
     void AddLineToDicts(Endpoint startEp, Endpoint endEp, IDable line) {
-        GlobalVars.pointsList.Add(startEp);
-        GlobalVars.pointsList.Add(endEp);
-        GlobalVars.linesList.Add(line);
-        GlobalVars.pointToLine.Add(startEp.id, line.id);
-        GlobalVars.pointToLine.Add(endEp.id, line.id);
-        GlobalVars.pointToPoint.Add(startEp.id, endEp.id);
-        GlobalVars.pointToPoint.Add(endEp.id, startEp.id);
-        GlobalVars.lineToPoints.Add(line.id,
+        SegmentHelper.pointsList.Add(startEp);
+        SegmentHelper.pointsList.Add(endEp);
+        SegmentHelper.linesList.Add(line);
+        SegmentHelper.pointToLine.Add(startEp.id, line.id);
+        SegmentHelper.pointToLine.Add(endEp.id, line.id);
+        SegmentHelper.pointToPoint.Add(startEp.id, endEp.id);
+        SegmentHelper.pointToPoint.Add(endEp.id, startEp.id);
+        SegmentHelper.lineToPoints.Add(line.id,
             new Tuple<int, int>(startEp.id, endEp.id));
     }
 
@@ -96,7 +96,7 @@ public class DrawingScript : MonoBehaviour {
         if (end == start) {
             return;
         }
-        Vector2 end2d = GlobalVars.SnapToLines(new Vector2(end.x, end.z), 0.3f);
+        Vector2 end2d = SegmentHelper.SnapToLines(new Vector2(end.x, end.z), 0.3f);
         end = new Vector3(end2d.x, end.y, end2d.y);
         Vector3 mid = (end + start)/2.0f;
         float dist = (float)Math.Sqrt(
@@ -132,21 +132,21 @@ public class DrawingScript : MonoBehaviour {
         Vector3 end = ScreenToPlane(drawingPlane);
         if (end != start) {
             if (end.x == start.x) {
-                GlobalVars.snapLines.Add(
+                SegmentHelper.snapLines.Add(
                     new LineRepr(start.x, start.y, end.y));
-                GlobalVars.snapLines.Last().lineId = currentLine.id;
+                SegmentHelper.snapLines.Last().lineId = currentLine.id;
             } else {
                 float m = (end.z - start.z)/(end.x - start.x);
                 // Y = mX + b
                 // b = Y - mX
                 float b = end.z - m * end.x;
-                GlobalVars.snapLines.Add(
+                SegmentHelper.snapLines.Add(
                     new LineRepr(
                         m,
                         b,
                         new Vector2(start.x, start.z),
                         new Vector2(end.x, end.z)));
-                GlobalVars.snapLines.Last().lineId = currentLine.id;
+                SegmentHelper.snapLines.Last().lineId = currentLine.id;
             }
             startPoint = null;
             endPoint = null;

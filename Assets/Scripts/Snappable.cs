@@ -27,7 +27,7 @@ public class Snappable : MonoBehaviour {
         if (plane.Raycast(ray, out distance)) {
             var newPos = ray.GetPoint(distance);
             if (snapToggle.isOn) {
-                var snappedCoords = GlobalVars.SnapToLines(
+                var snappedCoords = SegmentHelper.SnapToLines(
                     new Vector2(newPos.x, newPos.z),
                     snapDist);
                 transform.position = new Vector3(

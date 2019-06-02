@@ -35,11 +35,11 @@ public class Segment : IDable {
         var offset = newPos - transform.position;
 
         // Determine whether to snap lines or not
-        var endpoints = GlobalVars.GetEndpointsFromLine(this);
+        var endpoints = SegmentHelper.GetEndpointsFromLine(this);
         var ep1Pos = endpoints.Item1.transform.position + offset;
         var ep2Pos = endpoints.Item2.transform.position + offset;
-        var snapEp1Pos = GlobalVars.SnapToLines(ep1Pos, snapDist, id);
-        var snapEp2Pos = GlobalVars.SnapToLines(ep2Pos, snapDist, id);
+        var snapEp1Pos = SegmentHelper.SnapToLines(ep1Pos, snapDist, id);
+        var snapEp2Pos = SegmentHelper.SnapToLines(ep2Pos, snapDist, id);
         Vector3 snapOffset = Vector3.zero;
         if (snapEp1Pos != ep1Pos && snapEp2Pos != ep2Pos) {
             if (Vector3.Distance(snapEp1Pos, ep1Pos) <
@@ -57,6 +57,6 @@ public class Segment : IDable {
     }
 
     void OnMouseUp() {
-        GlobalVars.UpdateLineRepr(this);
+        SegmentHelper.UpdateLineRepr(this);
     }
 }

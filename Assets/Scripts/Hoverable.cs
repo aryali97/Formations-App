@@ -8,6 +8,8 @@ public class Hoverable : MonoBehaviour {
     private Color origColor;
     private Renderer renderer;
 
+    private static bool selected = false;
+
 	// Use this for initialization
 	void Start () {
 	    renderer = GetComponent<Renderer>();
@@ -17,12 +19,19 @@ public class Hoverable : MonoBehaviour {
     
     // Mouse hovers
     public void OnMouseEnter() {
+        if (selected) {
+            return;
+        }
         renderer.material.color = hoverColor;
     }
 
     // Mouse leaves hover
     public void OnMouseExit() {
         renderer.material.color = origColor;
+    }
+
+    public void OnMouseDown() {
+        selected = true;
     }
 
     // Sometimes, dragging makes cursor not fly over leading to OnMouseExit
@@ -32,5 +41,6 @@ public class Hoverable : MonoBehaviour {
 
     public void OnMouseUp() {
         renderer.material.color = origColor;
+        selected = false;
     }
 }

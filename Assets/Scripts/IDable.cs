@@ -6,8 +6,10 @@ public class IDable : MonoBehaviour {
     
     public int id;
 
+    private static int nextId = 0;
+
     void Awake() {
-        id = GlobalVars.nextId;
-        GlobalVars.nextId++;
+        id = nextId;
+        nextId++;
     }
 }

@@ -22,10 +22,10 @@ public class ShowLinesToggleScript : MonoBehaviour {
     void Toggled() {
         Debug.Log("TOGGLED " + toggle.isOn);
         bool beActive = toggle.isOn;
-        foreach (IDable line in GlobalVars.linesList) {
+        foreach (IDable line in SegmentHelper.linesList) {
             line.gameObject.active = beActive;
         }
-        foreach (Endpoint point in GlobalVars.pointsList) {
+        foreach (Endpoint point in SegmentHelper.pointsList) {
             point.gameObject.active = beActive;
         }
     }
