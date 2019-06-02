@@ -21,8 +21,39 @@ public class DrawingScript : MonoBehaviour {
     private Transform startPoint;
     private Transform endPoint;
     private IDable currentLine;
+    private IDable stageMarkerTemplate;
     private Plane drawingPlane;
     private bool shouldDraw;
+
+    void SetUpMarkerLines() {
+        stageMarkerTemplate = Resources.Load<IDable>("Prefabs/Marker Line");
+        float xDist = GlobalVars.horizSize / GlobalVars.horizSecs; 
+        for (int i = 1; i < GlobalVars.horizSecs; i++) {
+            SegmentHelper.snapLines.Add(new LineRepr(
+                -1 * GlobalVars.horizSize / 2.0f + xDist * i));
+            Instantiate(stageMarkerTemplate,
+                        new Vector3(-1 * GlobalVars.horizSize / 2.0f + xDist * i,
+                                    GlobalVars.markerLineY,
+                                    0),
+                        Quaternion.Euler(0, 0, 0));
+        }
+        float yDist = GlobalVars.vertSize / GlobalVars.vertSecs;
+        for (int i = 1; i < GlobalVars.vertSecs; i++) {
+            SegmentHelper.snapLines.Add(new LineRepr(
+                0,
+                -1 * GlobalVars.vertSize / 2.0f + yDist * i));
+            var horizLineTrans = Instantiate(
+                stageMarkerTemplate,
+                new Vector3(0,
+                            GlobalVars.markerLineY,
+                            -1 * GlobalVars.vertSize / 2.0f + yDist * i),
+                Quaternion.Euler(0, 90, 0)).transform;
+            horizLineTrans.localScale = new Vector3(
+                horizLineTrans.localScale.x,
+                horizLineTrans.localScale.y,
+                GlobalVars.horizSize / 10.0f);
+        }
+    }
 
 	// Use this for initialization
 	void Start () {
@@ -32,11 +63,11 @@ public class DrawingScript : MonoBehaviour {
 	    drawingPlane = new Plane(
             Vector3.up,
             new Vector3(0, drawingPlaneY, 0));
-        for (int i = -2; i <= 2; ++i) {
-            SegmentHelper.snapLines.Add(new LineRepr(i * 2.0f));
-        }
-        for (int i = -1; i <= 1; ++i) {
-            SegmentHelper.snapLines.Add(new LineRepr(0, 2.0f * i));
+
+        GlobalVars.horizSize = GameObject.FindWithTag("Stage").transform.localScale.x;
+        GlobalVars.vertSize = GameObject.FindWithTag("Stage").transform.localScale.z;
+        if (Application.isPlaying) {
+            SetUpMarkerLines();
         }
         epTemplate = Resources.Load<Endpoint>("Prefabs/Endpoint Circle");
         lineTemplate = Resources.Load<IDable>("Prefabs/Drawn Line");
@@ -117,6 +148,7 @@ public class DrawingScript : MonoBehaviour {
             AddLineToDicts(startEp, endEp, currentLine);
         }
         endPoint.position = end;
+        // TODO: Can probably remove this next line
         currentLine.transform.position = mid;
         currentLine.transform.rotation = Quaternion.Euler(0, angle, 0);
         currentLine.transform.localScale = new Vector3(
@@ -155,59 +187,7 @@ public class DrawingScript : MonoBehaviour {
         currentLine = null;
     }
 
-    static Vector3 V2ToV3(Vector2 v2) {
-        return new Vector3(v2.x, 0.0f, v2.y);
-    }
-
-    void CreateCircle(Vector3 center) {
-		GameObject circle = new GameObject("Circle");
-
-        const float radius = 0.2f;
-		const float segmentOffset = 40f;
-        const float segmentMultiplier = 5f;
-        var numSegments = (int) (radius * segmentMultiplier + segmentOffset);
-
-        // Create an array of points arround a cricle
-        var circleVertices = Enumerable.Range(0, numSegments)
-            .Select(i => {
-                var theta = 2 * Mathf.PI * i / numSegments;
-                return new Vector2(Mathf.Cos(theta), Mathf.Sin(theta)) * radius;
-            })
-            .ToArray();
-		
-        // Find all the triangles in the shape
-        var triangles = new Triangulator(circleVertices).Triangulate();
-		
-        // Assign each vertex the fill color
-        var colors = Enumerable.Repeat(Color.blue, circleVertices.Length).ToArray();
-
-        var mesh = new Mesh {
-            name = "Circle",
-            vertices = System.Array.ConvertAll<Vector2, Vector3> (
-                circleVertices,
-                V2ToV3),
-            triangles = triangles,
-            colors = colors
-        };
-		
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
-		
-		var filter = circle.AddComponent<MeshFilter>();
-        filter.mesh = mesh;		
-        // AssetDatabase.CreateAsset(mesh, "Assets/Meshes/CircleMeshFilter.obj"); 
-        // AssetDatabase.SaveAssets();
-
-		var meshRenderer = circle.AddComponent<MeshRenderer>();
-        meshRenderer.material = Resources.Load("Materials/Red_Draw.mat", typeof(Material)) as Material;
-
-		Instantiate(circle, center, Quaternion.Euler(0, 0, 0));
-        // UnityEngine.Object prefab = PrefabUtility.CreateEmptyPrefab("Assets/Prefabs/Endpoint Circle.prefab");
-        // PrefabUtility.ReplacePrefab(circle, prefab, ReplacePrefabOptions.ConnectToPrefab);
-    }
-
 	// Update is called once per frame
 	void Update () {
-		
 	}
 }
