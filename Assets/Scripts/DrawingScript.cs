@@ -17,7 +17,7 @@ public class DrawingScript : MonoBehaviour {
     private IDable lineTemplate;
     
     private Vector3 start;
-    private Transform startPoint;
+    private bool drawingLine;
     private Transform endPoint;
     private IDable currentLine;
     private IDable stageMarkerTemplate;
@@ -58,7 +58,7 @@ public class DrawingScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        startPoint = null;
+        drawingLine = false;
         endPoint = null;
         currentLine = null;
         rightClickDownInPrev = false;
@@ -109,18 +109,6 @@ public class DrawingScript : MonoBehaviour {
         }
     }
 
-    void AddLineToDicts(Endpoint startEp, Endpoint endEp, IDable line) {
-        SegmentHelper.pointsList.Add(startEp);
-        SegmentHelper.pointsList.Add(endEp);
-        SegmentHelper.linesList.Add(line);
-        SegmentHelper.pointToLine.Add(startEp.id, line.id);
-        SegmentHelper.pointToLine.Add(endEp.id, line.id);
-        SegmentHelper.pointToPoint.Add(startEp.id, endEp.id);
-        SegmentHelper.pointToPoint.Add(endEp.id, startEp.id);
-        SegmentHelper.lineToPoints.Add(line.id,
-            new Tuple<int, int>(startEp.id, endEp.id));
-    }
-
     void OnMouseDrag() {
         if (!shouldDraw) {
             return;
@@ -138,16 +126,16 @@ public class DrawingScript : MonoBehaviour {
         float angle = Mathf.Atan2(
             end.x - start.x,
             end.z - start.z) * Mathf.Rad2Deg;
-        if (startPoint == null) {
+        if (!drawingLine) {
             Endpoint startEp =
                 Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
-            startPoint = startEp.transform;
+            drawingLine = true;
             Endpoint endEp =
                 Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
             endPoint = endEp.transform;
             currentLine = 
                 Instantiate(lineTemplate, mid, Quaternion.Euler(0, angle, 0));
-            AddLineToDicts(startEp, endEp, currentLine);
+            SegmentHelper.AddSegmentToDicts(startEp, endEp, currentLine);
         }
         endPoint.position = end;
         currentLine.transform.position = mid;
@@ -181,7 +169,7 @@ public class DrawingScript : MonoBehaviour {
                         new Vector2(end.x, end.z)));
                 SegmentHelper.snapLines.Last().lineId = currentLine.id;
             }
-            startPoint = null;
+            drawingLine = false;
             endPoint = null;
             //currentLine = null;
         }
@@ -235,31 +223,28 @@ public class DrawingScript : MonoBehaviour {
         }
         Vector2 end2d = SegmentHelper.SnapToLines(new Vector2(end.x, end.z), 0.3f);
         end = new Vector3(end2d.x, end.y, end2d.y);
-        Vector3 mid = (end + start)/2.0f;
-        float dist = (float)Math.Sqrt(
-            Math.Pow(start.x - end.x, 2) +
-            Math.Pow(start.z - end.z, 2));
-        float angle = Mathf.Atan2(
-            end.x - start.x,
-            end.z - start.z) * Mathf.Rad2Deg;
-        if (startPoint == null) {
+        if (!drawingLine) {
+            Vector3 mid = (end + start)/2.0f;
+            float angle = Mathf.Atan2(
+                end.x - start.x,
+                end.z - start.z) * Mathf.Rad2Deg;
             Endpoint startEp =
                 Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
-            startPoint = startEp.transform;
             Endpoint endEp =
                 Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
             endPoint = endEp.transform;
             currentLine = 
                 Instantiate(lineTemplate, mid, Quaternion.Euler(0, angle, 0));
-            AddLineToDicts(startEp, endEp, currentLine);
+            SegmentHelper.AddSegmentToDicts(startEp, endEp, currentLine);
+            /*
+            var segmentTuple = SegmentHelper.CreateSegment(start, end); 
+            endPoint = segmentTuple.endEp;
+            currentLine = segmentTuple.line;
+            */
+            drawingLine = true;            
         }
         endPoint.position = end;
-        currentLine.transform.position = mid;
-        currentLine.transform.rotation = Quaternion.Euler(0, angle, 0);
-        currentLine.transform.localScale = new Vector3(
-            currentLine.transform.localScale.x,
-            currentLine.transform.localScale.y,
-            dist/10.0f);
+        SegmentHelper.UpdateLine(start, end, currentLine.transform);
     }
 
     void OnMouseRightUp() {
@@ -285,9 +270,8 @@ public class DrawingScript : MonoBehaviour {
                         new Vector2(end.x, end.z)));
                 SegmentHelper.snapLines.Last().lineId = currentLine.id;
             }
-            startPoint = null;
+            drawingLine = false;
             endPoint = null;
-            //currentLine = null;
         }
         currentLine = null;
     }

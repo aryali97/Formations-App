@@ -17,6 +17,23 @@ public static class SegmentHelper {
 
 
     /*
+    Add Segment to dictionaries for other use
+    */
+    public static void AddSegmentToDicts(Endpoint startEp,
+                                         Endpoint endEp,
+                                         IDable line) {
+        SegmentHelper.pointsList.Add(startEp);
+        SegmentHelper.pointsList.Add(endEp);
+        SegmentHelper.linesList.Add(line);
+        SegmentHelper.pointToLine.Add(startEp.id, line.id);
+        SegmentHelper.pointToLine.Add(endEp.id, line.id);
+        SegmentHelper.pointToPoint.Add(startEp.id, endEp.id);
+        SegmentHelper.pointToPoint.Add(endEp.id, startEp.id);
+        SegmentHelper.lineToPoints.Add(line.id,
+            new Tuple<int, int>(startEp.id, endEp.id));
+    }
+
+    /*
     Discards y axis
     */
     public static Vector2 V3toV2(Vector3 vec) {
@@ -50,7 +67,8 @@ public static class SegmentHelper {
         if (line == null) {
             return;
         }
-        for (int i = 8; i < snapLines.Count; i++) {
+        int markerCount = GlobalVars.horizSecs + GlobalVars.vertSecs - 2;
+        for (int i = markerCount; i < snapLines.Count; i++) {
             if (snapLines[i].lineId != line.id) {
                 continue;
             }
@@ -79,6 +97,26 @@ public static class SegmentHelper {
             snapLines[i].lineId = line.id;
         }
     }
+
+    /*
+    Create drawn line and endpoints from vector3 endpoints
+    public static (Endpoint startEp, Endpoint endEp, IDable line) CreateSegment(
+        Vector3 start,
+        Vector3 end) {
+        Vector3 mid = (end + start)/2.0f;
+        float angle = Mathf.Atan2(
+            end.x - start.x,
+            end.z - start.z) * Mathf.Rad2Deg;
+        Endpoint startEp =
+            Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
+        Endpoint endEp =
+            Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
+        endPoint = endEp.transform;
+        IDable line = 
+            Instantiate(lineTemplate, mid, Quaternion.Euler(0, angle, 0));
+        return (startEp, endEp, line);
+    }
+    */
 
     /*
     Update line position from endpoints
