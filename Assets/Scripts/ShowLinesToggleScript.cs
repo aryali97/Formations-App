@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 public class ShowLinesToggleScript : MonoBehaviour {
 
-    public Toggle toggle_;
+    public Toggle toggle;
 
 	// Use this for initialization
 	void Start () {
-        toggle_.onValueChanged.AddListener(delegate {
+        toggle.onValueChanged.AddListener(delegate {
             Toggled();
         });
 	}
@@ -20,13 +20,13 @@ public class ShowLinesToggleScript : MonoBehaviour {
 	}
 
     void Toggled() {
-        Debug.Log("TOGGLED " + toggle_.isOn);
-        bool be_active = toggle_.isOn;
+        Debug.Log("TOGGLED " + toggle.isOn);
+        bool beActive = toggle.isOn;
         foreach (IDable line in GlobalVars.linesList) {
-            line.gameObject.active = be_active;
+            line.gameObject.active = beActive;
         }
         foreach (Endpoint point in GlobalVars.pointsList) {
-            point.gameObject.active = be_active;
+            point.gameObject.active = beActive;
         }
     }
 }

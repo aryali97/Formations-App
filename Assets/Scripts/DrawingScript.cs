@@ -12,7 +12,7 @@ public class DrawingScript : MonoBehaviour {
 
     public float drawingPlaneY;
     public Transform drawnLine;
-    public Toggle drawn_lines_toggle_;
+    public Toggle drawnLinesToggle;
 
     private Endpoint epTemplate;
     private IDable lineTemplate;
@@ -56,7 +56,7 @@ public class DrawingScript : MonoBehaviour {
     }
 
     void OnMouseDown() {
-        if (!drawn_lines_toggle_.isOn) {
+        if (!drawnLinesToggle.isOn) {
             shouldDraw = false;
             return;
         }
@@ -80,12 +80,12 @@ public class DrawingScript : MonoBehaviour {
         GlobalVars.pointsList.Add(startEp);
         GlobalVars.pointsList.Add(endEp);
         GlobalVars.linesList.Add(line);
-        GlobalVars.pointToLine.Add(startEp.id_, line.id_);
-        GlobalVars.pointToLine.Add(endEp.id_, line.id_);
-        GlobalVars.pointToPoint.Add(startEp.id_, endEp.id_);
-        GlobalVars.pointToPoint.Add(endEp.id_, startEp.id_);
-        GlobalVars.lineToPoints.Add(line.id_,
-            new Tuple<int, int>(startEp.id_, endEp.id_));
+        GlobalVars.pointToLine.Add(startEp.id, line.id);
+        GlobalVars.pointToLine.Add(endEp.id, line.id);
+        GlobalVars.pointToPoint.Add(startEp.id, endEp.id);
+        GlobalVars.pointToPoint.Add(endEp.id, startEp.id);
+        GlobalVars.lineToPoints.Add(line.id,
+            new Tuple<int, int>(startEp.id, endEp.id));
     }
 
     void OnMouseDrag() {
@@ -134,7 +134,7 @@ public class DrawingScript : MonoBehaviour {
             if (end.x == start.x) {
                 GlobalVars.snapLines.Add(
                     new LineRepr(start.x, start.y, end.y));
-                GlobalVars.snapLines.Last().line_id_ = currentLine.id_;
+                GlobalVars.snapLines.Last().lineId = currentLine.id;
             } else {
                 float m = (end.z - start.z)/(end.x - start.x);
                 // Y = mX + b
@@ -146,7 +146,7 @@ public class DrawingScript : MonoBehaviour {
                         b,
                         new Vector2(start.x, start.z),
                         new Vector2(end.x, end.z)));
-                GlobalVars.snapLines.Last().line_id_ = currentLine.id_;
+                GlobalVars.snapLines.Last().lineId = currentLine.id;
             }
             startPoint = null;
             endPoint = null;

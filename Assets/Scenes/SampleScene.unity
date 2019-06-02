@@ -1015,7 +1015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48189c0e47e664ba9be9998c7a92a5e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toggle_: {fileID: 941877387}
+  toggle: {fileID: 941877387}
 --- !u!1 &979267912
 GameObject:
   m_ObjectHideFlags: 0
@@ -1928,7 +1928,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   drawingPlaneY: 0.6
   drawnLine: {fileID: 4137126319790580, guid: 0254ad580422840d8b4347bbc385d54c, type: 2}
-  drawn_lines_toggle_: {fileID: 941877387}
+  drawnLinesToggle: {fileID: 941877387}
 --- !u!64 &2143121240
 MeshCollider:
   m_ObjectHideFlags: 0

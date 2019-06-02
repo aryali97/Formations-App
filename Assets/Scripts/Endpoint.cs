@@ -11,17 +11,17 @@ public class Endpoint : IDable {
 	
 	// Update is called once per frame
 	void OnMouseDrag() {
-        Endpoint end = GlobalVars.FindConnectedPoint(id_);
+        Endpoint end = GlobalVars.FindConnectedPoint(id);
         if (!end) {
             return;
         }
-        IDable line = GlobalVars.FindConnectedLine(id_);
+        IDable line = GlobalVars.FindConnectedLine(id);
         GlobalVars.UpdateLine(this.transform.position,
                               end.transform.position,
                               line.transform);
 	}
 
     void OnMouseUp() {
-        GlobalVars.UpdateLineRepr(GlobalVars.FindConnectedLine(id_));
+        GlobalVars.UpdateLineRepr(GlobalVars.FindConnectedLine(id));
     }
 }

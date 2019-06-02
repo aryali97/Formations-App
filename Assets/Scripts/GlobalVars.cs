@@ -19,6 +19,13 @@ public static class GlobalVars {
 
 
     /*
+    Discards y axis
+    */
+    public static Vector2 V3toV2(Vector3 vec) {
+        return new Vector2(vec.x, vec.z);
+    }
+
+    /*
     Get Endpoints from IDable line
     */
     public static Tuple<Endpoint, Endpoint> GetEndpointsFromLine(IDable line) {
@@ -27,11 +34,11 @@ public static class GlobalVars {
         }
         Endpoint ep1 = null;
         Endpoint ep2 = null;
-        Tuple<int, int> pointIds = lineToPoints[line.id_];
+        Tuple<int, int> pointIds = lineToPoints[line.id];
         foreach (Endpoint ep in pointsList) {
-            if (ep.id_ == pointIds.Item1) {
+            if (ep.id == pointIds.Item1) {
                 ep1 = ep;
-            } else if (ep.id_ == pointIds.Item2) {
+            } else if (ep.id == pointIds.Item2) {
                 ep2 = ep;
             }
         }
@@ -46,16 +53,16 @@ public static class GlobalVars {
             return;
         }
         for (int i = 8; i < snapLines.Count; i++) {
-            if (snapLines[i].line_id_ != line.id_) {
+            if (snapLines[i].lineId != line.id) {
                 continue;
             }
-            float half_length = line.transform.localScale.z * 5.0f;
+            float halfLength = line.transform.localScale.z * 5.0f;
             if (line.transform.rotation.eulerAngles.y != 90 && 
                 line.transform.rotation.eulerAngles.y != 270) {
                 float p1x = (float)(Math.Sin(line.transform.rotation.eulerAngles.y * Mathf.Deg2Rad))
-                    * half_length + line.transform.position.x;
+                    * halfLength + line.transform.position.x;
                 float p1z = (float)(Math.Cos(line.transform.rotation.eulerAngles.y * Mathf.Deg2Rad))
-                    * half_length + line.transform.position.z;
+                    * halfLength + line.transform.position.z;
                 float p2x = line.transform.position.x - (p1x - line.transform.position.x);
                 float p2z = line.transform.position.z - (p1z - line.transform.position.z);
                 float m = (p2z - p1z)/(p2x - p1x);
@@ -67,11 +74,11 @@ public static class GlobalVars {
                     new Vector2(p2x, p2z));
             } else {
                 float p1x = line.transform.position.x;
-                float p1z = line.transform.position.z - half_length;
-                float p2z = line.transform.position.z + half_length;
+                float p1z = line.transform.position.z - halfLength;
+                float p2z = line.transform.position.z + halfLength;
                 snapLines[i] = new LineRepr(p1x, p1z, p2z);
             }
-            snapLines[i].line_id_ = line.id_;
+            snapLines[i].lineId = line.id;
         }
     }
 
@@ -110,7 +117,7 @@ public static class GlobalVars {
     */
     public static IDable FindLine(int id) {
         foreach (IDable line in linesList) {
-            if (line.id_ == id) {
+            if (line.id == id) {
                 return line;
             }
         }
@@ -132,22 +139,30 @@ public static class GlobalVars {
     */
     public static Endpoint FindPoint(int id) {
         foreach (Endpoint ep in pointsList) {
-            if (ep.id_ == id) {
+            if (ep.id == id) {
                 return ep;
             }
         }
         return null;
     }
 
-    public static Vector2 SnapToLines(Vector2 point, float snapDist) {
+    public static Vector3 SnapToLines(Vector3 point, float snapDist, int omitId = -1) {
+        var snap2d = SnapToLines(V3toV2(point), snapDist, omitId);
+        return new Vector3(snap2d.x, point.y, snap2d.y);
+    }
+
+    public static Vector2 SnapToLines(Vector2 point, float snapDist, int omitId = -1) {
         float bestDist = snapDist;
         Vector2 closestPoint = point;
         List<int> snapLineIndex = new List<int>();
         //TODO: Change if grid line number changes
-        Toggle lines_toggle = GameObject.FindWithTag("Shown Drawn Lines Toggle").
+        Toggle linesToggle = GameObject.FindWithTag("Shown Drawn Lines Toggle").
             GetComponent<Toggle>();
-        int end_count = lines_toggle.isOn ? snapLines.Count : 8;
-        for (int i = 0; i < end_count; ++i) {
+        int endCount = linesToggle.isOn ? snapLines.Count : 8;
+        for (int i = 0; i < endCount; ++i) {
+            if (i >= 8 && snapLines[i].lineId == omitId) {
+                continue;
+            }
             Vector2 newP = snapLines[i].ClosestPoint(point);
             float dist = Vector2.Distance(newP, point);
             if (dist < bestDist) {
@@ -157,8 +172,14 @@ public static class GlobalVars {
             }
         }
         bestDist = snapDist;
-        for (int i = 0; i < end_count; ++i) {
-            for (int j = i + 1; j < end_count; ++j) {
+        for (int i = 0; i < endCount; ++i) {
+            if (i >= 8 && snapLines[i].lineId == omitId) {
+                continue;
+            }
+            for (int j = i + 1; j < endCount; ++j) {
+                if (j >= 8 && snapLines[j].lineId == omitId) {
+                    continue;
+                }
                 Vector2 newP = new Vector2(0, 0);
                 if (LineRepr.Intersection(
                         snapLines[i],
