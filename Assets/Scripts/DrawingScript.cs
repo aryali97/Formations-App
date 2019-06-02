@@ -148,7 +148,6 @@ public class DrawingScript : MonoBehaviour {
             AddLineToDicts(startEp, endEp, currentLine);
         }
         endPoint.position = end;
-        // TODO: Can probably remove this next line
         currentLine.transform.position = mid;
         currentLine.transform.rotation = Quaternion.Euler(0, angle, 0);
         currentLine.transform.localScale = new Vector3(

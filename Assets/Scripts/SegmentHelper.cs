@@ -156,9 +156,10 @@ public static class SegmentHelper {
         //TODO: Change if grid line number changes
         Toggle linesToggle = GameObject.FindWithTag("Shown Drawn Lines Toggle").
             GetComponent<Toggle>();
-        int endCount = linesToggle.isOn ? snapLines.Count : 8;
+        int markerCount = GlobalVars.horizSecs + GlobalVars.vertSecs - 2;
+        int endCount = linesToggle.isOn ? snapLines.Count : markerCount;
         for (int i = 0; i < endCount; ++i) {
-            if (i >= 8 && snapLines[i].lineId == omitId) {
+            if (i >= markerCount && snapLines[i].lineId == omitId) {
                 continue;
             }
             Vector2 newP = snapLines[i].ClosestPoint(point);
@@ -171,11 +172,11 @@ public static class SegmentHelper {
         }
         bestDist = snapDist;
         for (int i = 0; i < endCount; ++i) {
-            if (i >= 8 && snapLines[i].lineId == omitId) {
+            if (i >= markerCount && snapLines[i].lineId == omitId) {
                 continue;
             }
             for (int j = i + 1; j < endCount; ++j) {
-                if (j >= 8 && snapLines[j].lineId == omitId) {
+                if (j >= markerCount && snapLines[j].lineId == omitId) {
                     continue;
                 }
                 Vector2 newP = new Vector2(0, 0);
