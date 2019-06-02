@@ -22,14 +22,14 @@ public static class SegmentHelper {
     public static void AddSegmentToDicts(Endpoint startEp,
                                          Endpoint endEp,
                                          Segment line) {
-        SegmentHelper.pointsList.Add(startEp);
-        SegmentHelper.pointsList.Add(endEp);
-        SegmentHelper.linesList.Add(line);
-        SegmentHelper.pointToLine.Add(startEp.id, line.id);
-        SegmentHelper.pointToLine.Add(endEp.id, line.id);
-        SegmentHelper.pointToPoint.Add(startEp.id, endEp.id);
-        SegmentHelper.pointToPoint.Add(endEp.id, startEp.id);
-        SegmentHelper.lineToPoints.Add(line.id,
+        pointsList.Add(startEp);
+        pointsList.Add(endEp);
+        linesList.Add(line);
+        pointToLine.Add(startEp.id, line.id);
+        pointToLine.Add(endEp.id, line.id);
+        pointToPoint.Add(startEp.id, endEp.id);
+        pointToPoint.Add(endEp.id, startEp.id);
+        lineToPoints.Add(line.id,
             new Tuple<int, int>(startEp.id, endEp.id));
     }
 
