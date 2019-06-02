@@ -89,6 +89,7 @@ public class DrawingScript : MonoBehaviour {
     }
 
     void OnMouseDown() {
+        /*
         if (!drawnLinesToggle.isOn) {
             shouldDraw = false;
             return;
@@ -107,9 +108,11 @@ public class DrawingScript : MonoBehaviour {
         if (shouldDraw) {
             start = ScreenToPlane(drawingPlane);
         }
+        */
     }
 
     void OnMouseDrag() {
+        /*
         if (!shouldDraw) {
             return;
         }
@@ -144,9 +147,11 @@ public class DrawingScript : MonoBehaviour {
             currentLine.transform.localScale.x,
             currentLine.transform.localScale.y,
             dist/10.0f);
+        */
     }
 
     void OnMouseUp() {
+        /*
         if (!shouldDraw) {
             return;
         }
@@ -174,6 +179,7 @@ public class DrawingScript : MonoBehaviour {
             //currentLine = null;
         }
         currentLine = null;
+        */
     }
 
 	// Update is called once per frame
@@ -185,16 +191,13 @@ public class DrawingScript : MonoBehaviour {
         if (Input.GetMouseButton(1)) {
             if (!rightClickDownInPrev) {
                 rightMouseDownPos = Input.mousePosition;
-                Debug.Log("Right click down");
                 OnMouseRightDown(); 
             } else if (Input.mousePosition != rightMouseDownPos)  {
-                Debug.Log("Richt click drag");
                 OnMouseRightDrag(); 
             }
             rightClickDownInPrev = true;
         } else {
             if (rightClickDownInPrev) {
-                Debug.Log("Right click up");
                 rightMouseDownPos = Vector3.zero; 
                 OnMouseRightUp();
             }
@@ -254,26 +257,10 @@ public class DrawingScript : MonoBehaviour {
         }
         Vector3 end = ScreenToPlane(drawingPlane);
         if (end != start) {
-            if (end.x == start.x) {
-                SegmentHelper.snapLines.Add(
-                    new LineRepr(start.x, start.y, end.y));
-                SegmentHelper.snapLines.Last().lineId = currentLine.id;
-            } else {
-                float m = (end.z - start.z)/(end.x - start.x);
-                // Y = mX + b
-                // b = Y - mX
-                float b = end.z - m * end.x;
-                SegmentHelper.snapLines.Add(
-                    new LineRepr(
-                        m,
-                        b,
-                        new Vector2(start.x, start.z),
-                        new Vector2(end.x, end.z)));
-                SegmentHelper.snapLines.Last().lineId = currentLine.id;
-            }
-            drawingLine = false;
-            endPoint = null;
+            SegmentHelper.snapLines.Add(SegmentHelper.CreateFromSegment(currentLine));
         }
+        drawingLine = false;
+        endPoint = null;
         currentLine = null;
     }
 }

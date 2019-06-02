@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public static class SegmentHelper {
     public static List<LineRepr> snapLines = new List<LineRepr>();
     public static List<Endpoint> pointsList = new List<Endpoint>();
-    public static List<IDable> linesList = new List<IDable>();
+    public static List<Segment> linesList = new List<Segment>();
     public static Dictionary<int, int> pointToLine =
         new Dictionary<int, int>();
     public static Dictionary<int, int> pointToPoint =
@@ -21,7 +21,7 @@ public static class SegmentHelper {
     */
     public static void AddSegmentToDicts(Endpoint startEp,
                                          Endpoint endEp,
-                                         IDable line) {
+                                         Segment line) {
         SegmentHelper.pointsList.Add(startEp);
         SegmentHelper.pointsList.Add(endEp);
         SegmentHelper.linesList.Add(line);
@@ -63,7 +63,7 @@ public static class SegmentHelper {
     /*
     Update line representation from line
     */
-    public static void UpdateLineRepr(IDable line) {
+    public static void UpdateLineRepr(Segment line) {
         if (line == null) {
             return;
         }
@@ -72,30 +72,39 @@ public static class SegmentHelper {
             if (snapLines[i].lineId != line.id) {
                 continue;
             }
-            float halfLength = line.transform.localScale.z * 5.0f;
-            if (line.transform.rotation.eulerAngles.y != 90 && 
-                line.transform.rotation.eulerAngles.y != 270) {
-                float p1x = (float)(Math.Sin(line.transform.rotation.eulerAngles.y * Mathf.Deg2Rad))
-                    * halfLength + line.transform.position.x;
-                float p1z = (float)(Math.Cos(line.transform.rotation.eulerAngles.y * Mathf.Deg2Rad))
-                    * halfLength + line.transform.position.z;
-                float p2x = line.transform.position.x - (p1x - line.transform.position.x);
-                float p2z = line.transform.position.z - (p1z - line.transform.position.z);
-                float m = (p2z - p1z)/(p2x - p1x);
-                float b = p2z - m * p2x;
-                snapLines[i] = new LineRepr(
-                    m,
-                    b,
-                    new Vector2(p1x, p1z),
-                    new Vector2(p2x, p2z));
-            } else {
-                float p1x = line.transform.position.x;
-                float p1z = line.transform.position.z - halfLength;
-                float p2z = line.transform.position.z + halfLength;
-                snapLines[i] = new LineRepr(p1x, p1z, p2z);
-            }
-            snapLines[i].lineId = line.id;
+            snapLines[i] = CreateFromSegment(line);
         }
+    }
+
+    /*
+    Create LineRepr from Segment
+    */
+    public static LineRepr CreateFromSegment(Segment line) {
+        LineRepr repr;
+        float halfLength = line.transform.localScale.z * 5.0f;
+        if (line.transform.rotation.eulerAngles.y != 90 && 
+            line.transform.rotation.eulerAngles.y != 270) {
+            float p1x = (float)(Math.Sin(line.transform.rotation.eulerAngles.y * Mathf.Deg2Rad))
+                * halfLength + line.transform.position.x;
+            float p1z = (float)(Math.Cos(line.transform.rotation.eulerAngles.y * Mathf.Deg2Rad))
+                * halfLength + line.transform.position.z;
+            float p2x = line.transform.position.x - (p1x - line.transform.position.x);
+            float p2z = line.transform.position.z - (p1z - line.transform.position.z);
+            float m = (p2z - p1z)/(p2x - p1x);
+            float b = p2z - m * p2x;
+            repr = new LineRepr(
+                m,
+                b,
+                new Vector2(p1x, p1z),
+                new Vector2(p2x, p2z));
+        } else {
+            float p1x = line.transform.position.x;
+            float p1z = line.transform.position.z - halfLength;
+            float p2z = line.transform.position.z + halfLength;
+            repr = new LineRepr(p1x, p1z, p2z);
+        }
+        repr.lineId = line.id;
+        return repr;
     }
 
     /*
@@ -142,7 +151,7 @@ public static class SegmentHelper {
     /*
     Finds IDable line connected directly to point with given id
     */
-    public static IDable FindConnectedLine(int id) {
+    public static Segment FindConnectedLine(int id) {
         if (!pointToLine.ContainsKey(id)) {
             return null;
         }
@@ -152,8 +161,8 @@ public static class SegmentHelper {
     /*
     Finds IDable line with given id
     */
-    public static IDable FindLine(int id) {
-        foreach (IDable line in linesList) {
+    public static Segment FindLine(int id) {
+        foreach (Segment line in linesList) {
             if (line.id == id) {
                 return line;
             }
