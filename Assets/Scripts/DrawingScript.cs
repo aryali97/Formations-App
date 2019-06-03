@@ -33,11 +33,13 @@ public class DrawingScript : MonoBehaviour {
         for (int i = 1; i < GlobalVars.horizSecs; i++) {
             SegmentHelper.snapLines.Add(new LineRepr(
                 -1 * GlobalVars.horizSize / 2.0f + xDist * i));
-            Instantiate(stageMarkerTemplate,
-                        new Vector3(-1 * GlobalVars.horizSize / 2.0f + xDist * i,
-                                    GlobalVars.markerLineY,
-                                    0),
-                        Quaternion.Euler(0, 0, 0));
+            var segment = 
+                Instantiate(stageMarkerTemplate,
+                            new Vector3(-1 * GlobalVars.horizSize / 2.0f + xDist * i,
+                                        GlobalVars.markerLineY,
+                                        0),
+                            Quaternion.Euler(0, 0, 0));
+            segment.id = 0;
         }
         float yDist = GlobalVars.vertSize / GlobalVars.vertSecs;
         for (int i = 1; i < GlobalVars.vertSecs; i++) {
@@ -49,11 +51,12 @@ public class DrawingScript : MonoBehaviour {
                 new Vector3(0,
                             GlobalVars.markerLineY,
                             -1 * GlobalVars.vertSize / 2.0f + yDist * i),
-                Quaternion.Euler(0, 90, 0)).transform;
-            horizLineTrans.localScale = new Vector3(
-                horizLineTrans.localScale.x,
-                horizLineTrans.localScale.y,
+                Quaternion.Euler(0, 90, 0));
+            horizLineTrans.transform.localScale = new Vector3(
+                horizLineTrans.transform.localScale.x,
+                horizLineTrans.transform.localScale.y,
                 GlobalVars.horizSize / 10.0f);
+            horizLineTrans.id = 0;
         }
     }
 
@@ -188,6 +191,7 @@ public class DrawingScript : MonoBehaviour {
 	void Update () {
         MouseRightHandler();
         UnselectHandler();
+        DeleteHandler();
 	}
 
     void MouseRightHandler() {
@@ -291,5 +295,12 @@ public class DrawingScript : MonoBehaviour {
         }
         selected.Unselect();
         selected = null;
+    }
+
+    void DeleteHandler() {
+        if (selected == null || !Input.GetKey(KeyCode.Backspace)) {
+            return;
+        }
+        Destroy(selected);
     }
 }

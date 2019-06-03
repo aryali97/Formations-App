@@ -63,4 +63,28 @@ public class Segment : IDable {
     void OnMouseUp() {
         SegmentHelper.UpdateLineRepr(this);
     }
+
+    void OnDestroy() {
+        // Ignore marker lines
+        if (id == 0) {
+            return; 
+        }
+        RemoveLineFromPoint(points.Item1);
+        RemoveLineFromPoint(points.Item2);
+        Destroy(gameObject);
+    }
+
+    void RemoveLineFromPoint(Endpoint ep) {
+        if (ep.connects.Count == 1) {
+            Destroy(ep);
+            return;
+        } 
+        int i = 0;
+        for (; i < ep.connects.Count; i++) {
+            if (ep.connects[i].Item2.id == id) {
+                break;
+            }
+        }
+        ep.connects.RemoveAt(i);
+    }
 }

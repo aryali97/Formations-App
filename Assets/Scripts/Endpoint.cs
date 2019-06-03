@@ -41,4 +41,11 @@ public class Endpoint : IDable {
         }
         return segmentIds;
     }
+
+    void OnDestroy() {
+        foreach (var pointAndSeg in connects) {
+            Destroy(pointAndSeg.Item2);
+        }
+        Destroy(gameObject);
+    }
 }
