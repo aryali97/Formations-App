@@ -1466,7 +1466,7 @@ GameObject:
   - component: {fileID: 2143121239}
   m_Layer: 0
   m_Name: Drawing Pane
-  m_TagString: Untagged
+  m_TagString: Drawing Pane
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1485,6 +1485,7 @@ MonoBehaviour:
   drawingPlaneY: 0.6
   drawnLine: {fileID: 4137126319790580, guid: 0254ad580422840d8b4347bbc385d54c, type: 2}
   drawnLinesToggle: {fileID: 941877387}
+  selected: {fileID: 0}
 --- !u!64 &2143121240
 MeshCollider:
   m_ObjectHideFlags: 0

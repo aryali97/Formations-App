@@ -23,6 +23,7 @@ public class Segment : IDable {
             return;
         }
         centOffset = transform.position - ray.GetPoint(distance);
+        Select();
     }
 
     void OnMouseDrag() {

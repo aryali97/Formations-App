@@ -16,12 +16,13 @@ public class DrawingScript : MonoBehaviour {
     private Endpoint epTemplate;
     private Segment lineTemplate;
     
+    public IDable selected;
     private Vector3 start;
     private Endpoint startPoint;
     private Transform endPoint;
     private Segment currentLine;
-    private bool drawingLine;
     private Plane drawingPlane;
+    private bool drawingLine;
     private bool shouldDraw;
     private bool rightClickDownInPrev;
     private Vector3 rightMouseDownPos;
@@ -62,6 +63,7 @@ public class DrawingScript : MonoBehaviour {
         endPoint = null;
         currentLine = null;
         rightClickDownInPrev = false;
+        selected = null;
 	    drawingPlane = new Plane(
             Vector3.up,
             new Vector3(0, drawingPlaneY, 0));

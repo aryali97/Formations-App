@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Shown Drawn Lines Toggle
   - Stage
+  - Drawing Pane
   layers:
   - Default
   - TransparentFX
