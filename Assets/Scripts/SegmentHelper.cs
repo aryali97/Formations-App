@@ -8,8 +8,6 @@ public static class SegmentHelper {
     public static List<LineRepr> snapLines = new List<LineRepr>();
     public static List<Endpoint> pointsList = new List<Endpoint>();
     public static List<Segment> linesList = new List<Segment>();
-    public static Dictionary<int, int> pointToPoint =
-        new Dictionary<int, int>();
     public static Dictionary<int, Tuple<int, int>> lineToPoints =
         new Dictionary<int, Tuple<int, int>>();
 
@@ -23,8 +21,6 @@ public static class SegmentHelper {
         pointsList.Add(startEp);
         pointsList.Add(endEp);
         linesList.Add(line);
-        pointToPoint.Add(startEp.id, endEp.id);
-        pointToPoint.Add(endEp.id, startEp.id);
         lineToPoints.Add(line.id,
             new Tuple<int, int>(startEp.id, endEp.id));
     }
@@ -154,16 +150,6 @@ public static class SegmentHelper {
             }
         }
         return null;
-    }
-
-    /*
-    Finds Endpoint connected one away, else returns null
-    */
-    public static Endpoint FindConnectedPoint(int id) {
-        if (!pointToPoint.ContainsKey(id)) {
-            return null;
-        }
-        return FindPoint(pointToPoint[id]);
     }
 
     /*

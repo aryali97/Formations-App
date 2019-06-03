@@ -13,8 +13,7 @@ public class Endpoint : IDable {
 	
 	// Update is called once per frame
 	void OnMouseDrag() {
-        Endpoint end = SegmentHelper.FindConnectedPoint(id);
-        if (!end) {
+        if (connects.Count == 0) {
             return;
         }
         foreach (var pointAndSeg in connects) {
