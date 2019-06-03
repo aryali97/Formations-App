@@ -18,7 +18,6 @@ public class Hoverable : MonoBehaviour {
             return;
         }
         renderer.material.color = GlobalVars.hoverColor;
-        Debug.Log("Color reset");
     }
 
     // Mouse leaves hover

@@ -27,8 +27,6 @@ public class IDable : MonoBehaviour {
         }
         controller.selected = this;
         GetComponent<Renderer>().material.color = GlobalVars.activeColor;
-        Debug.Log("Color set");
-        Debug.Log(GetComponent<Renderer>().material.color);
         selected = true;
     }
 

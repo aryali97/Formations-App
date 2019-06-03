@@ -187,6 +187,7 @@ public class DrawingScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         MouseRightHandler();
+        UnselectHandler();
 	}
 
     void MouseRightHandler() {
@@ -282,5 +283,13 @@ public class DrawingScript : MonoBehaviour {
         endPoint = null;
         currentLine = null;
         startPoint = null;
+    }
+
+    void UnselectHandler() {
+        if (!Input.GetKey(KeyCode.Escape) || selected == null) {
+            return;
+        }
+        selected.Unselect();
+        selected = null;
     }
 }
