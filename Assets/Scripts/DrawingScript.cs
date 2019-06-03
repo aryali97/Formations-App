@@ -17,17 +17,17 @@ public class DrawingScript : MonoBehaviour {
     private Segment lineTemplate;
     
     private Vector3 start;
-    private bool drawingLine;
+    private Endpoint startPoint;
     private Transform endPoint;
     private Segment currentLine;
-    private IDable stageMarkerTemplate;
+    private bool drawingLine;
     private Plane drawingPlane;
     private bool shouldDraw;
     private bool rightClickDownInPrev;
     private Vector3 rightMouseDownPos;
 
     void SetUpMarkerLines() {
-        stageMarkerTemplate = Resources.Load<IDable>("Prefabs/Marker Line");
+        Segment stageMarkerTemplate = Resources.Load<Segment>("Prefabs/Marker Line");
         float xDist = GlobalVars.horizSize / GlobalVars.horizSecs; 
         for (int i = 1; i < GlobalVars.horizSecs; i++) {
             SegmentHelper.snapLines.Add(new LineRepr(
@@ -211,8 +211,20 @@ public class DrawingScript : MonoBehaviour {
             return;
         }
         shouldDraw = true;
+        Plane epplane = new Plane(
+            Vector3.up,
+            new Vector3(0, drawingPlaneY, 0));
+        Vector3 epplanepoint = ScreenToPlane(epplane);
+        RaycastHit2D hit = Physics2D.Raycast(epplanepoint, Vector2.zero);
         if (shouldDraw) {
-            start = ScreenToPlane(drawingPlane);
+            if (hit && hit.collider.name.Contains("Endpoint") &&
+                Vector3.Distance(hit.transform.position, epplanepoint) <= 1.0f) {
+                startPoint = hit.collider.gameObject.GetComponent<Endpoint>();
+                start = startPoint.transform.position;
+            } else { 
+                
+                start = ScreenToPlane(drawingPlane);
+            }
         }
     }
 
@@ -232,6 +244,8 @@ public class DrawingScript : MonoBehaviour {
                 end.x - start.x,
                 end.z - start.z) * Mathf.Rad2Deg;
             Endpoint startEp =
+                startPoint != null ?
+                startPoint :
                 Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
             Endpoint endEp =
                 Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
@@ -265,5 +279,6 @@ public class DrawingScript : MonoBehaviour {
         drawingLine = false;
         endPoint = null;
         currentLine = null;
+        startPoint = null;
     }
 }

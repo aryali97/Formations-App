@@ -16,11 +16,7 @@ public class Endpoint : IDable {
         if (connects.Count == 0) {
             return;
         }
-        foreach (var pointAndSeg in connects) {
-            SegmentHelper.UpdateLine(this.transform.position,
-                pointAndSeg.Item1.transform.position,
-                pointAndSeg.Item2.transform);
-        }
+        UpdateLinesToPos(transform.position);
 	}
 
     void OnMouseUp() {
@@ -30,6 +26,14 @@ public class Endpoint : IDable {
     }
 
     // Specific Helpers
+    public void UpdateLinesToPos(Vector3 pos) {
+        foreach (var pointAndSeg in connects) {
+            SegmentHelper.UpdateLine(pos,
+                pointAndSeg.Item1.transform.position,
+                pointAndSeg.Item2.transform);
+        }
+    }
+
     public HashSet<int> connectSegmentIdSet() {
         HashSet<int> segmentIds = new HashSet<int>();
         foreach (var pointAndSeg in connects) {

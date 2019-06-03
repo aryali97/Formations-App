@@ -53,7 +53,9 @@ public class Segment : IDable {
             snapOffset = snapEp2Pos - ep2Pos;
         }
         points.Item1.transform.position = ep1Pos + snapOffset;
+        points.Item1.UpdateLinesToPos(points.Item1.transform.position);
         points.Item2.transform.position = ep2Pos + snapOffset;
+        points.Item2.UpdateLinesToPos(points.Item2.transform.position);
         transform.position = newPos + snapOffset;
     }
 
