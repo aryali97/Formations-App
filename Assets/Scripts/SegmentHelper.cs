@@ -29,6 +29,22 @@ public static class SegmentHelper {
     }
 
     /*
+    Remove line represenation for line
+    */
+    public static void RemoveLineRepr(Segment line) {
+        if (line == null) {
+            return;
+        }
+        int i = GlobalVars.horizSecs + GlobalVars.vertSecs - 2;
+        for (; i < snapLines.Count; i++) {
+            if (snapLines[i].lineId == line.id) {
+                break;
+            }
+        }
+        snapLines.RemoveAt(i);
+    }
+
+    /*
     Update line representation from line
     */
     public static void UpdateLineRepr(Segment line) {

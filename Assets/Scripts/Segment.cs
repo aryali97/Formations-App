@@ -71,6 +71,7 @@ public class Segment : IDable {
         }
         RemoveLineFromPoint(points.Item1);
         RemoveLineFromPoint(points.Item2);
+        SegmentHelper.RemoveLineRepr(this);
         Destroy(gameObject);
     }
 
