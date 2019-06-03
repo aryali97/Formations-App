@@ -37,9 +37,8 @@ public class Segment : IDable {
         var offset = newPos - transform.position;
 
         // Determine whether to snap lines or not
-        var endpoints = SegmentHelper.GetEndpointsFromLine(this);
-        var ep1Pos = endpoints.Item1.transform.position + offset;
-        var ep2Pos = endpoints.Item2.transform.position + offset;
+        var ep1Pos = points.Item1.transform.position + offset;
+        var ep2Pos = points.Item2.transform.position + offset;
         var snapEp1Pos = SegmentHelper.SnapToLines(ep1Pos, snapDist, id);
         var snapEp2Pos = SegmentHelper.SnapToLines(ep2Pos, snapDist, id);
         Vector3 snapOffset = Vector3.zero;
@@ -53,8 +52,8 @@ public class Segment : IDable {
         } else if (snapEp2Pos != ep2Pos) {
             snapOffset = snapEp2Pos - ep2Pos;
         }
-        endpoints.Item1.transform.position = ep1Pos + snapOffset;
-        endpoints.Item2.transform.position = ep2Pos + snapOffset;
+        points.Item1.transform.position = ep1Pos + snapOffset;
+        points.Item2.transform.position = ep2Pos + snapOffset;
         transform.position = newPos + snapOffset;
     }
 

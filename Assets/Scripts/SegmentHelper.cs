@@ -8,8 +8,6 @@ public static class SegmentHelper {
     public static List<LineRepr> snapLines = new List<LineRepr>();
     public static List<Endpoint> pointsList = new List<Endpoint>();
     public static List<Segment> linesList = new List<Segment>();
-    public static Dictionary<int, Tuple<int, int>> lineToPoints =
-        new Dictionary<int, Tuple<int, int>>();
 
 
     /*
@@ -21,8 +19,6 @@ public static class SegmentHelper {
         pointsList.Add(startEp);
         pointsList.Add(endEp);
         linesList.Add(line);
-        lineToPoints.Add(line.id,
-            new Tuple<int, int>(startEp.id, endEp.id));
     }
 
     /*
@@ -30,26 +26,6 @@ public static class SegmentHelper {
     */
     public static Vector2 V3toV2(Vector3 vec) {
         return new Vector2(vec.x, vec.z);
-    }
-
-    /*
-    Get Endpoints from IDable line
-    */
-    public static Tuple<Endpoint, Endpoint> GetEndpointsFromLine(IDable line) {
-        if (line == null) {
-            return null;
-        }
-        Endpoint ep1 = null;
-        Endpoint ep2 = null;
-        Tuple<int, int> pointIds = lineToPoints[line.id];
-        foreach (Endpoint ep in pointsList) {
-            if (ep.id == pointIds.Item1) {
-                ep1 = ep;
-            } else if (ep.id == pointIds.Item2) {
-                ep2 = ep;
-            }
-        }
-        return new Tuple<Endpoint, Endpoint>(ep1, ep2);
     }
 
     /*
