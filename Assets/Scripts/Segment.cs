@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Segment : IDable {
 
+    public Tuple<Endpoint, Endpoint> points;
     private float y;
     private float snapDist;
     private Vector3 centOffset;

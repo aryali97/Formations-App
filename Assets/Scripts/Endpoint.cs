@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEditor;
 
 public class Endpoint : IDable {
+    
+    public List<Tuple<Endpoint, Segment>> connects = new List<Tuple<Endpoint, Segment>>();
 
     void Start() {
     }
@@ -15,13 +17,25 @@ public class Endpoint : IDable {
         if (!end) {
             return;
         }
-        IDable line = SegmentHelper.FindConnectedLine(id);
-        SegmentHelper.UpdateLine(this.transform.position,
-                              end.transform.position,
-                              line.transform);
+        foreach (var pointAndSeg in connects) {
+            SegmentHelper.UpdateLine(this.transform.position,
+                pointAndSeg.Item1.transform.position,
+                pointAndSeg.Item2.transform);
+        }
 	}
 
     void OnMouseUp() {
-        SegmentHelper.UpdateLineRepr(SegmentHelper.FindConnectedLine(id));
+        foreach (var pointAndSeg in connects) {
+            SegmentHelper.UpdateLineRepr(pointAndSeg.Item2);
+        }
+    }
+
+    // Specific Helpers
+    public HashSet<int> connectSegmentIdSet() {
+        HashSet<int> segmentIds = new HashSet<int>();
+        foreach (var pointAndSeg in connects) {
+            segmentIds.Add(pointAndSeg.Item2.id);
+        }
+        return segmentIds;
     }
 }

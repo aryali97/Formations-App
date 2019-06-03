@@ -8,8 +8,6 @@ public static class SegmentHelper {
     public static List<LineRepr> snapLines = new List<LineRepr>();
     public static List<Endpoint> pointsList = new List<Endpoint>();
     public static List<Segment> linesList = new List<Segment>();
-    public static Dictionary<int, int> pointToLine =
-        new Dictionary<int, int>();
     public static Dictionary<int, int> pointToPoint =
         new Dictionary<int, int>();
     public static Dictionary<int, Tuple<int, int>> lineToPoints =
@@ -25,8 +23,6 @@ public static class SegmentHelper {
         pointsList.Add(startEp);
         pointsList.Add(endEp);
         linesList.Add(line);
-        pointToLine.Add(startEp.id, line.id);
-        pointToLine.Add(endEp.id, line.id);
         pointToPoint.Add(startEp.id, endEp.id);
         pointToPoint.Add(endEp.id, startEp.id);
         lineToPoints.Add(line.id,
@@ -149,16 +145,6 @@ public static class SegmentHelper {
     }
 
     /*
-    Finds IDable line connected directly to point with given id
-    */
-    public static Segment FindConnectedLine(int id) {
-        if (!pointToLine.ContainsKey(id)) {
-            return null;
-        }
-        return FindLine(pointToLine[id]);
-    }
-
-    /*
     Finds IDable line with given id
     */
     public static Segment FindLine(int id) {
@@ -192,12 +178,65 @@ public static class SegmentHelper {
         return null;
     }
 
-    public static Vector3 SnapToLines(Vector3 point, float snapDist, int omitId = -1) {
+    public static Vector3 SnapToLines(Vector3 point,
+                                      float snapDist,
+                                      HashSet<int> omitIds = null) {
+        var snap2d = SnapToLines(V3toV2(point), snapDist, omitIds);
+        return new Vector3(snap2d.x, point.y, snap2d.y);
+    }
+
+    public static Vector2 SnapToLines(Vector2 point,
+                                      float snapDist,
+                                      HashSet<int> omitIds = null) {
+        float bestDist = snapDist;
+        Vector2 closestPoint = point;
+        List<int> snapLineIndex = new List<int>();
+        //TODO: Change if grid line number changes
+        Toggle linesToggle = GameObject.FindWithTag("Shown Drawn Lines Toggle").
+            GetComponent<Toggle>();
+        int markerCount = GlobalVars.horizSecs + GlobalVars.vertSecs - 2;
+        int endCount = linesToggle.isOn ? snapLines.Count : markerCount;
+        for (int i = 0; i < endCount; ++i) {
+            if (omitIds != null && omitIds.Contains(snapLines[i].lineId)) {
+                continue;
+            }
+            Vector2 newP = snapLines[i].ClosestPoint(point);
+            float dist = Vector2.Distance(newP, point);
+            if (dist < bestDist) {
+                bestDist = dist;
+                closestPoint = newP;
+                snapLineIndex.Add(i);
+            }
+        }
+        bestDist = snapDist;
+        for (int i = 0; i < endCount; ++i) {
+            if (omitIds != null && omitIds.Contains(snapLines[i].lineId)) {
+                continue;
+            }
+            for (int j = i + 1; j < endCount; ++j) {
+                if (omitIds != null && omitIds.Contains(snapLines[i].lineId)) {
+                    continue;
+                }
+                Vector2 newP = new Vector2(0, 0);
+                if (LineRepr.Intersection(
+                        snapLines[i],
+                        snapLines[j],
+                        ref newP) &&
+                    Vector2.Distance(point, newP) < bestDist) {
+                    bestDist = snapDist;
+                    closestPoint = newP;
+                }
+            }
+        }
+        return closestPoint;
+    }
+
+    public static Vector3 SnapToLines(Vector3 point, float snapDist, int omitId) {
         var snap2d = SnapToLines(V3toV2(point), snapDist, omitId);
         return new Vector3(snap2d.x, point.y, snap2d.y);
     }
 
-    public static Vector2 SnapToLines(Vector2 point, float snapDist, int omitId = -1) {
+    public static Vector2 SnapToLines(Vector2 point, float snapDist, int omitId) {
         float bestDist = snapDist;
         Vector2 closestPoint = point;
         List<int> snapLineIndex = new List<int>();

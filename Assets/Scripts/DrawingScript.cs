@@ -239,6 +239,9 @@ public class DrawingScript : MonoBehaviour {
             currentLine = 
                 Instantiate(lineTemplate, mid, Quaternion.Euler(0, angle, 0));
             SegmentHelper.AddSegmentToDicts(startEp, endEp, currentLine);
+            startEp.connects.Add(new Tuple<Endpoint, Segment>(endEp, currentLine)); 
+            endEp.connects.Add(new Tuple<Endpoint, Segment>(startEp, currentLine));
+            currentLine.points = new Tuple<Endpoint, Endpoint>(startEp, endEp);
             /*
             Endpoint endEp = null, startEp = null;
             SegmentHelper.CreateSegment(start, end, startEp, endEp, currentLine); 

@@ -28,13 +28,13 @@ public class Snappable : MonoBehaviour {
             var newPos = ray.GetPoint(distance);
             if (snapToggle.isOn) {
                 var thisEp = GetComponent<Endpoint>();
-                int omitId = thisEp ?
-                    SegmentHelper.FindConnectedLine(thisEp.id).id :
-                    -1;
+                HashSet<int> omitIds = thisEp ?
+                    thisEp.connectSegmentIdSet() :
+                    new HashSet<int>();
                 var snappedCoords = SegmentHelper.SnapToLines(
                     newPos,
                     snapDist,
-                    omitId);
+                    omitIds);
                 transform.position = new Vector3(
                     snappedCoords.x,
                     y,
