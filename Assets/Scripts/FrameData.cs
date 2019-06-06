@@ -7,10 +7,11 @@ public static class FrameData
 {
     public static Dictionary<int, Dictionary<int, Vector3>> framePlayerPositions =
         new Dictionary<int, Dictionary<int, Vector3>>();
+    public static GameObject scrollContent = 
+        GameObject.FindWithTag("Stage Preview Content");
 
 
     public static void UpdateBallsInFrame(int frameNum) {
-        var scrollContent = GameObject.FindWithTag("Stage Preview Content");
         var frame = scrollContent.transform.GetChild(frameNum);
 
         if (!framePlayerPositions.ContainsKey(frameNum)) {

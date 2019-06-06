@@ -26,8 +26,6 @@ public class PlayerTestScript : MonoBehaviour {
             (stage.transform.position.z - stage.transform.localScale.z/2.0f);
         stageZMax = 
             (stage.transform.position.z + stage.transform.localScale.z/2.0f);
-        Debug.Log("X min max: (" + stageXMin + ", " + stageXMax + ")");
-        Debug.Log("Z min max: (" + stageZMin + ", " + stageZMax + ")");
 	}
 
     // Clamp position to stage size

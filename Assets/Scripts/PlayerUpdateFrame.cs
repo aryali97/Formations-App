@@ -5,11 +5,8 @@ using UnityEngine.UI;
 
 public class PlayerUpdateFrame : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject scrollContent;
-
     void OnMouseUp() {
-        int frameNum = scrollContent.transform.childCount - 1;
+        int frameNum = FrameData.scrollContent.transform.childCount - 1;
         FrameData.UpdateBallsInFrame(frameNum);
     }
 }
