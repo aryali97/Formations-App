@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Hoverable : MonoBehaviour {
     private Renderer renderer;
-    private IDable idable;
+    private Drawable idable;
 
 	// Use this for initialization
 	void Start () {
 	    renderer = GetComponent<Renderer>();
-        idable = GetComponent<IDable>();
+        idable = GetComponent<Drawable>();
 	}
     
     // Mouse hovers

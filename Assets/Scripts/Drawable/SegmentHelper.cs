@@ -133,7 +133,7 @@ public static class SegmentHelper {
     }
 
     /*
-    Finds IDable line with given id
+    Finds Segment line with given id
     */
     public static Segment FindLine(int id) {
         foreach (Segment line in linesList) {

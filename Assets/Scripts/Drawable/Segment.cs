@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Segment : IDable {
+public class Segment : Drawable {
 
     public Tuple<Endpoint, Endpoint> points;
     private float y;

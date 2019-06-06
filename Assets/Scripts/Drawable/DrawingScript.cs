@@ -16,7 +16,7 @@ public class DrawingScript : MonoBehaviour {
     private Endpoint epTemplate;
     private Segment lineTemplate;
     
-    public IDable selected;
+    public Drawable selected;
     private Vector3 start;
     private Endpoint startPoint;
     private Transform endPoint;

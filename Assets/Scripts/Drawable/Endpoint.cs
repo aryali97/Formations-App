@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class Endpoint : IDable {
+public class Endpoint : Drawable {
     
     public List<Tuple<Endpoint, Segment>> connects = new List<Tuple<Endpoint, Segment>>();
 
