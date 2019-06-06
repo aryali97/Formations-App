@@ -192,7 +192,7 @@ public static class SegmentHelper {
                 continue;
             }
             for (int j = i + 1; j < endCount; ++j) {
-                if (omitIds != null && omitIds.Contains(snapLines[i].lineId)) {
+                if (omitIds != null && omitIds.Contains(snapLines[j].lineId)) {
                     continue;
                 }
                 Vector2 newP = new Vector2(0, 0);
