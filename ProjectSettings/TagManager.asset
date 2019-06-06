@@ -7,6 +7,9 @@ TagManager:
   - Shown Drawn Lines Toggle
   - Stage
   - Drawing Pane
+  - Stage Preview Template
+  - Stage Preview Content
+  - Player Ball
   layers:
   - Default
   - TransparentFX
