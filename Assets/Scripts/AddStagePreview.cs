@@ -13,17 +13,8 @@ public class AddStagePreview : MonoBehaviour
 
     void Awake() {
         scrollContent = GameObject.FindWithTag("Stage Preview Content");
-
-        var balls = GameObject.FindGameObjectsWithTag("Player Ball");
-        foreach (var ball in balls) {
-            var playerPrev = Instantiate(Resources.Load<Image>("Prefabs/Player Preview"));
-            playerPrev.transform.SetParent(scrollContent.transform.GetChild(0));
-            var playerPrevRect = playerPrev.GetComponent<RectTransform>();
-            playerPrevRect.localPosition = new Vector3(
-                ball.transform.position.x * 10,
-                ball.transform.position.z * 10,
-                0);
-        }
+        
+        FrameData.UpdateBallsInFrame(0);
     }
 
     public void OnButtonClick() {
@@ -36,5 +27,7 @@ public class AddStagePreview : MonoBehaviour
         newButton.transform.GetChild(1).GetComponent<Text>().text = "#" +
             (Int32.Parse(frameToDuplicate.transform.GetChild(1)
                  .GetComponent<Text>().text.Substring(1)) + 1);
+
+        FrameData.UpdateBallsInFrame(scrollContent.transform.childCount - 1);
     }
 }
