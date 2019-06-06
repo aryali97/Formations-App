@@ -37,7 +37,24 @@ public static class FrameData
                 ball.transform.position.z * 10,
                 0);
             framePlayerPositions[frameNum][ball.GetComponent<IDable>().id] =
-                ball.transform.position;
+                new Vector3(
+                    ball.transform.position.x,
+                    1.0f,
+                    ball.transform.position.z
+                );
         }
+    }
+
+    public static bool SetStageByFrame(int frameNum) {
+        if (!framePlayerPositions.ContainsKey(frameNum)) {
+            return false;
+        }
+
+        var balls = GameObject.FindGameObjectsWithTag("Player Ball");
+        foreach (var ball in balls) {
+            ball.transform.position = framePlayerPositions[frameNum]
+                [ball.GetComponent<IDable>().id];
+        }
+        return true;
     }
 }

@@ -22,7 +22,8 @@ public class PlayMovement : MonoBehaviour
                 "beats");
             return;
         }
-
+        
+        FrameData.SetStageByFrame(0);
         playing = true; 
         framePlayingFrom = 0;
         stopWatch = Stopwatch.StartNew();
