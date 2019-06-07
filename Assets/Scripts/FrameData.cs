@@ -8,9 +8,27 @@ public static class FrameData
 {
     public static Dictionary<int, Dictionary<int, Vector3>> framePlayerPositions =
         new Dictionary<int, Dictionary<int, Vector3>>();
+    public static Dictionary<int, Dictionary<int, Movement>> frameMovements =
+        new Dictionary<int, Dictionary<int, Movement>>();
     public static GameObject scrollContent = 
         GameObject.FindWithTag("Stage Preview Content");
 
+
+    public static void CreateEmptyMovements(int frameNum) {
+        frameMovements[frameNum] = new Dictionary<int, Movement>();
+        var balls = GameObject.FindGameObjectsWithTag("Player Ball");
+        foreach (var ball in balls) {
+            int id = ball.GetComponent<IDable>().id;
+            int beats = GetBeatFromFrame(frameNum);
+            if (beats == -1) {
+                beats = 0;
+            }
+            frameMovements[frameNum][id] = new LinearMovement(
+                ball.transform.position,
+                ball.transform.position,
+                beats);
+        }
+    }
 
     public static void UpdateBallsInFrame(int frameNum) {
         var frame = scrollContent.transform.GetChild(frameNum);
@@ -25,10 +43,10 @@ public static class FrameData
                 GameObject.Destroy(child.gameObject);
             }
         }
-
-        // Add all players to frame
+        
         var balls = GameObject.FindGameObjectsWithTag("Player Ball");
         foreach (var ball in balls) {
+            // Add all players to frame
             var playerPrev = GameObject.Instantiate(Resources.Load<Image>(
                 "Prefabs/Player Preview"));
             playerPrev.transform.SetParent(frame);
@@ -37,17 +55,23 @@ public static class FrameData
                 ball.transform.position.x * 10,
                 ball.transform.position.z * 10,
                 0);
-            framePlayerPositions[frameNum][ball.GetComponent<IDable>().id] =
-                new Vector3(
-                    ball.transform.position.x,
-                    1.0f,
-                    ball.transform.position.z
-                );
+            int ballId = ball.GetComponent<IDable>().id;
+            framePlayerPositions[frameNum][ballId] = new Vector3(
+                ball.transform.position.x,
+                1.0f,
+                ball.transform.position.z);
+            
+            // Update movement
+            if (frameNum >= 1) {
+                frameMovements[frameNum - 1][ballId].end = ball.transform.position;
+            }
+            if (frameNum < scrollContent.transform.childCount - 1) {
+                frameMovements[frameNum][ballId].start = ball.transform.position;
+            }
         }
     }
 
     public static bool SetStageByFrame(int frameNum) {
-        Debug.Log("Set stage by frame called");
         if (!framePlayerPositions.ContainsKey(frameNum)) {
             return false;
         }
@@ -86,9 +110,7 @@ public static class FrameData
         foreach (var ball in balls) {
             var rb = ball.GetComponent<Rigidbody>();
             int ballId = ball.GetComponent<IDable>().id;
-            rb.velocity = (framePlayerPositions[frameNumFrom + 1][ballId] -
-                framePlayerPositions[frameNumFrom][ballId]) / ((float)beats);
-            rb.angularVelocity = Vector3.zero;
+            frameMovements[frameNumFrom][ballId].Move(rb);
         }
     }
 }

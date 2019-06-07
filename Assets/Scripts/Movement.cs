@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+public abstract class Movement
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    public Vector3 start;
+    public Vector3 end;
+    public int beats;
+
+    public Movement(Vector3 startVec, Vector3 endVec, int b) {
+        start = startVec;
+        end = endVec;
+        beats = b;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public abstract void Move(Rigidbody rb);
 }

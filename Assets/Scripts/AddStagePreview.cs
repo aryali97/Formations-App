@@ -24,7 +24,9 @@ public class AddStagePreview : MonoBehaviour
         newButton.transform.GetChild(1).GetComponent<Text>().text = "#" +
             (Int32.Parse(frameToDuplicate.transform.GetChild(1)
                  .GetComponent<Text>().text.Substring(1)) + 1);
-
+        
+        FrameData.CreateEmptyMovements(FrameData.scrollContent.transform
+            .childCount - 2);
         FrameData.UpdateBallsInFrame(FrameData.scrollContent.transform
             .childCount - 1);
     }
