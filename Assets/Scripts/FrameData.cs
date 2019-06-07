@@ -12,6 +12,7 @@ public static class FrameData
         new Dictionary<int, Dictionary<int, Movement>>();
     public static GameObject scrollContent = 
         GameObject.FindWithTag("Stage Preview Content");
+    public static int selectedFrame = 0;
 
 
     public static void CreateEmptyMovements(int frameNum) {
@@ -91,13 +92,21 @@ public static class FrameData
         return true;
     }
 
+    public static Transform GetFrameTransform(int frameNum) {
+        if (scrollContent.transform.childCount <= frameNum) {
+            return null;
+        }
+
+        return scrollContent.transform.GetChild(frameNum);
+    }
+
     public static int GetBeatFromFrame(int frameNum) {
         if (scrollContent.transform.childCount <= frameNum) {
             return -1;
         }
 
-        foreach (Transform inputFieldChild in scrollContent.transform.GetChild(
-            frameNum).GetChild(2)) {
+        foreach (Transform inputFieldChild in GetFrameTransform(frameNum)
+                 .GetChild(2)) {
             if (inputFieldChild.name.Contains("Text")) {
                 string text = inputFieldChild.GetComponent<Text>().text;
                 if (text == "") {
