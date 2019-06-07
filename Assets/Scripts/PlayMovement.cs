@@ -30,7 +30,7 @@ public class PlayMovement : MonoBehaviour
         UnityEngine.Debug.Log("Playing");
     }
 
-    void Update() {
+    void FixedUpdate() {
         if (!playing) {
             return;
         }
@@ -41,29 +41,23 @@ public class PlayMovement : MonoBehaviour
             UnityEngine.Debug.Log("Stopped because reached last frame");
             return;
         }
-        if (stopWatch.ElapsedMilliseconds > 2000) {
-            UnityEngine.Debug.Log("2 seconds finished!");
-            playing = false;
-            framePlayingFrom = 0;
-            stopWatch.Stop();
+
+        FrameData.MovePlayers(framePlayingFrom);
+        if (stopWatch.ElapsedMilliseconds > (FrameData.GetBeatFromFrame(
+            framePlayingFrom + 1) * 1000)) {
+            FrameData.SetStageByFrame(framePlayingFrom + 1);
+            framePlayingFrom++;
+            stopWatch = Stopwatch.StartNew();
             return;
-        }
+        }         
     }
 
     bool AllFramesHaveBeats() {
         bool allFramesHaveBeats = true;
         for (int i = 1; i < FrameData.scrollContent.transform.childCount; i++) {
-            Transform inputField = FrameData.scrollContent.transform.GetChild(i)
-                .GetChild(2);
-            foreach (Transform inputFieldChild in inputField) {
-                if (inputFieldChild.name.Contains("Text")) {
-                    if (inputFieldChild.GetComponent<Text>().text == "") {
-                        allFramesHaveBeats = false;
-                    }
-                    break;
-                }
-            }
-            if (!allFramesHaveBeats) {
+            if (FrameData.GetBeatFromFrame(i) < 0) {
+                UnityEngine.Debug.Log("Frame " + i + " doesn't have data");
+                allFramesHaveBeats = false;
                 break;
             }
         }

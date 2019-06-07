@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,6 +47,7 @@ public static class FrameData
     }
 
     public static bool SetStageByFrame(int frameNum) {
+        Debug.Log("Set stage by frame called");
         if (!framePlayerPositions.ContainsKey(frameNum)) {
             return false;
         }
@@ -54,7 +56,39 @@ public static class FrameData
         foreach (var ball in balls) {
             ball.transform.position = framePlayerPositions[frameNum]
                 [ball.GetComponent<IDable>().id];
+            ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            ball.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         }
         return true;
+    }
+
+    public static int GetBeatFromFrame(int frameNum) {
+        if (scrollContent.transform.childCount <= frameNum) {
+            return -1;
+        }
+
+        foreach (Transform inputFieldChild in scrollContent.transform.GetChild(
+            frameNum).GetChild(2)) {
+            if (inputFieldChild.name.Contains("Text")) {
+                string text = inputFieldChild.GetComponent<Text>().text;
+                if (text == "") {
+                    return -1;
+                }
+                return Int32.Parse(text);
+            }
+        }
+        return -1;
+    }
+
+    public static void MovePlayers(int frameNumFrom) {
+        int beats = GetBeatFromFrame(frameNumFrom + 1);
+        var balls = GameObject.FindGameObjectsWithTag("Player Ball");
+        foreach (var ball in balls) {
+            var rb = ball.GetComponent<Rigidbody>();
+            int ballId = ball.GetComponent<IDable>().id;
+            rb.velocity = (framePlayerPositions[frameNumFrom + 1][ballId] -
+                framePlayerPositions[frameNumFrom][ballId]) / ((float)beats);
+            rb.angularVelocity = Vector3.zero;
+        }
     }
 }
