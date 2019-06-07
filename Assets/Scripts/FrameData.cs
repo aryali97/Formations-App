@@ -35,6 +35,26 @@ public static class FrameData
         }
     }
 
+    public static void PushBackFrameData(int frameNum) {
+        if ((scrollContent.transform.childCount - 2) <= frameNum) {
+            return;
+        }
+
+        // Update Movements
+        for (int i = scrollContent.transform.childCount - 2;
+             i > frameNum; i--) {
+            frameMovements[i] = new Dictionary<int, Movement>(
+                frameMovements[i - 1]);
+        }
+
+        // Update positions
+        for (int i = scrollContent.transform.childCount - 1;
+             i > frameNum; i--) {
+            framePlayerPositions[i] = new Dictionary<int, Vector3>(
+                framePlayerPositions[i - 1]);
+        }
+    }
+
     public static void UpdateBallsInFrame(int frameNum) {
         var frame = scrollContent.transform.GetChild(frameNum);
 

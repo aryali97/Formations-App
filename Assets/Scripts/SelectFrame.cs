@@ -17,6 +17,7 @@ public class SelectFrame : MonoBehaviour
         selectBorder.transform.SetParent(transform, false);
         selectBorder.GetComponent<RectTransform>().localPosition = Vector3.zero;
         FrameData.selectedFrame = transform.GetSiblingIndex();
+        FrameData.SetStageByFrame(FrameData.selectedFrame);
     }
 
     // Update is called once per frame

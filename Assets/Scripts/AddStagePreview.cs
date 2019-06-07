@@ -14,22 +14,22 @@ public class AddStagePreview : MonoBehaviour
     }
 
     public void OnButtonClick() {
-        // Change to selected from to duplicate
         var frameToDuplicate = Resources.Load<SelectFrame>("Prefabs/Stage Preview");
-        /*
-            FrameData.scrollContent.transform.GetChild(
-                FrameData.scrollContent.transform.childCount - 1)
-                .gameObject;
-                */
         var newButton = Instantiate(frameToDuplicate);
         newButton.transform.SetParent(FrameData.scrollContent.transform, false);
+        if (FrameData.selectedFrame >= 0) {
+            newButton.transform.SetSiblingIndex(FrameData.selectedFrame + 1);
+        }
         newButton.transform.GetChild(1).GetComponent<Text>().text = "#" +
             (newButton.transform.GetSiblingIndex() + 1);
         
-        FrameData.CreateEmptyMovements(FrameData.scrollContent.transform
-            .childCount - 2);
-        FrameData.UpdateBallsInFrame(FrameData.scrollContent.transform
-            .childCount - 1);
+        // TODO: Gotta update movements
+        int lastFrame = (FrameData.selectedFrame >= 0 ?
+            FrameData.selectedFrame :
+            FrameData.scrollContent.transform.childCount - 2);
+        FrameData.PushBackFrameData(lastFrame);
+        FrameData.CreateEmptyMovements(lastFrame);
+        FrameData.UpdateBallsInFrame(newButton.transform.GetSiblingIndex());
 
         newButton.Select();
     }

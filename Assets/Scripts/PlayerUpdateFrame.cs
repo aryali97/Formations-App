@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class PlayerUpdateFrame : MonoBehaviour
 {
     void OnMouseUp() {
-        int frameNum = FrameData.scrollContent.transform.childCount - 1;
-        FrameData.UpdateBallsInFrame(frameNum);
+        FrameData.UpdateBallsInFrame(FrameData.selectedFrame);
     }
 }
