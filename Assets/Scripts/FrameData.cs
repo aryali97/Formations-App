@@ -24,8 +24,12 @@ public static class FrameData
                 beats = 0;
             }
             frameMovements[frameNum][id] = new LinearMovement(
-                ball.transform.position,
-                ball.transform.position,
+                new Vector3(ball.transform.position.x,
+                            1.0f,
+                            ball.transform.position.z),
+                new Vector3(ball.transform.position.x,
+                            1.0f,
+                            ball.transform.position.z),
                 beats);
         }
     }
@@ -56,17 +60,18 @@ public static class FrameData
                 ball.transform.position.z * 10,
                 0);
             int ballId = ball.GetComponent<IDable>().id;
-            framePlayerPositions[frameNum][ballId] = new Vector3(
+            Vector3 ignoringY =  new Vector3(
                 ball.transform.position.x,
                 1.0f,
                 ball.transform.position.z);
-            
+            framePlayerPositions[frameNum][ballId] = ignoringY;
+
             // Update movement
             if (frameNum >= 1) {
-                frameMovements[frameNum - 1][ballId].end = ball.transform.position;
+                frameMovements[frameNum - 1][ballId].end = ignoringY;
             }
             if (frameNum < scrollContent.transform.childCount - 1) {
-                frameMovements[frameNum][ballId].start = ball.transform.position;
+                frameMovements[frameNum][ballId].start = ignoringY;
             }
         }
     }
@@ -104,13 +109,14 @@ public static class FrameData
         return -1;
     }
 
-    public static void MovePlayers(int frameNumFrom) {
+    public static void MovePlayers(int frameNumFrom, long ms) {
         int beats = GetBeatFromFrame(frameNumFrom + 1);
         var balls = GameObject.FindGameObjectsWithTag("Player Ball");
         foreach (var ball in balls) {
             var rb = ball.GetComponent<Rigidbody>();
             int ballId = ball.GetComponent<IDable>().id;
             frameMovements[frameNumFrom][ballId].Move(rb);
+            frameMovements[frameNumFrom][ballId].SetPosition(ms, ball);
         }
     }
 }

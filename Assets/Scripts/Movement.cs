@@ -15,4 +15,6 @@ public abstract class Movement
     }
 
     public abstract void Move(Rigidbody rb);
+
+    public abstract void SetPosition(long ms, GameObject ball);
 }

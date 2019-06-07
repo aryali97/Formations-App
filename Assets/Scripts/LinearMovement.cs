@@ -11,4 +11,9 @@ public class LinearMovement : Movement
         rb.velocity = (end - start) / ((float)beats); 
         rb.angularVelocity = Vector3.zero;
     }
+
+    public override void SetPosition(long ms, GameObject ball) {
+        float percent = ((float)ms)/(((float)beats) * 1000);
+        ball.transform.position = ((end - start) * percent) + start;
+    }
 }

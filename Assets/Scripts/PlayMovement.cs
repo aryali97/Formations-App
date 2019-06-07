@@ -26,7 +26,6 @@ public class PlayMovement : MonoBehaviour
         FrameData.SetStageByFrame(0);
         playing = true; 
         framePlayingFrom = 0;
-        stopWatch = Stopwatch.StartNew();
         UnityEngine.Debug.Log("Playing");
     }
 
@@ -34,6 +33,10 @@ public class PlayMovement : MonoBehaviour
         if (!playing) {
             return;
         }
+        if (stopWatch == null || !stopWatch.IsRunning) {
+            stopWatch = Stopwatch.StartNew();
+        }
+
         if (framePlayingFrom >= FrameData.scrollContent.transform.childCount - 1) {
             playing = false;
             framePlayingFrom = 0;
@@ -42,9 +45,9 @@ public class PlayMovement : MonoBehaviour
             return;
         }
 
-        FrameData.MovePlayers(framePlayingFrom);
-        if (stopWatch.ElapsedMilliseconds > (FrameData.GetBeatFromFrame(
-            framePlayingFrom + 1) * 1000)) {
+        FrameData.MovePlayers(framePlayingFrom, stopWatch.ElapsedMilliseconds);
+        if ((stopWatch.ElapsedMilliseconds)  >
+            (FrameData.GetBeatFromFrame(framePlayingFrom + 1) * 1000)) {
             FrameData.SetStageByFrame(framePlayingFrom + 1);
             framePlayingFrom++;
             stopWatch = Stopwatch.StartNew();
