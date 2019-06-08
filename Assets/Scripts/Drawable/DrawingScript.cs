@@ -27,11 +27,12 @@ public class DrawingScript : MonoBehaviour {
     private bool rightClickDownInPrev;
     private Vector3 rightMouseDownPos;
 
-    void SetUpMarkerLines() {
+    // Used by height and width edits
+    public static void SetUpMarkerLines() {
         Segment stageMarkerTemplate = Resources.Load<Segment>("Prefabs/Marker Line");
         float xDist = GlobalVars.horizSize / GlobalVars.horizSecs; 
         for (int i = 1; i < GlobalVars.horizSecs; i++) {
-            SegmentHelper.snapLines.Add(new LineRepr(
+            SegmentHelper.snapLines.Insert(0, new LineRepr(
                 -1 * GlobalVars.horizSize / 2.0f + xDist * i));
             var segment = 
                 Instantiate(stageMarkerTemplate,
@@ -43,7 +44,7 @@ public class DrawingScript : MonoBehaviour {
         }
         float yDist = GlobalVars.vertSize / GlobalVars.vertSecs;
         for (int i = 1; i < GlobalVars.vertSecs; i++) {
-            SegmentHelper.snapLines.Add(new LineRepr(
+            SegmentHelper.snapLines.Insert(0, new LineRepr(
                 0,
                 -1 * GlobalVars.vertSize / 2.0f + yDist * i));
             var horizLineTrans = Instantiate(

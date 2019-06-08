@@ -10,6 +10,7 @@ TagManager:
   - Stage Preview Template
   - Stage Preview Content
   - Player Ball
+  - Marker Line
   layers:
   - Default
   - TransparentFX
