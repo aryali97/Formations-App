@@ -16,4 +16,9 @@ public class LinearMovement : Movement
         float percent = ((float)ms)/(((float)beats) * 1000);
         ball.transform.position = ((end - start) * percent) + start;
     }
+
+    public override string ToString() {
+        return "LinearMovement from " + start + " to " + end + " in " +
+            beats + " beats";
+    }
 }

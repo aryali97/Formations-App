@@ -23,7 +23,6 @@ public class AddStagePreview : MonoBehaviour
         newButton.transform.GetChild(1).GetComponent<Text>().text = "#" +
             (newButton.transform.GetSiblingIndex() + 1);
         
-        // TODO: Gotta update movements
         int lastFrame = (FrameData.selectedFrame >= 0 ?
             FrameData.selectedFrame :
             FrameData.scrollContent.transform.childCount - 2);
