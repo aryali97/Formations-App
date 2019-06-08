@@ -15,6 +15,9 @@ public class InputFieldBeatUpdate : MonoBehaviour
 
     void UpdateBeats()
     {
+        if (transform.parent.GetSiblingIndex() == 0) {
+            return;
+        }
         int frameNum = gameObject.transform.parent.GetSiblingIndex();
         var inputField = GetComponent<InputField>();
         int beats = (inputField.text == "") ? 0 : Int32.Parse(inputField.text);

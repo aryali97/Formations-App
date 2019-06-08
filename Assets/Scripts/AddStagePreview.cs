@@ -22,6 +22,9 @@ public class AddStagePreview : MonoBehaviour
         }
         newButton.transform.GetChild(1).GetComponent<Text>().text = "#" +
             (newButton.transform.GetSiblingIndex() + 1);
+        newButton.transform.GetChild(2).GetComponent<InputField>().text =
+            FrameData.scrollContent.transform.GetChild(FrameData.selectedFrame)
+                .GetChild(2).GetComponent<InputField>().text;
         
         int lastFrame = (FrameData.selectedFrame >= 0 ?
             FrameData.selectedFrame :
