@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RemoveStagePreview : MonoBehaviour
 {
@@ -37,6 +38,14 @@ public class RemoveStagePreview : MonoBehaviour
         }
         FrameData.frameMovements.Remove(
             FrameData.scrollContent.transform.childCount - 2);
+
+        // Update frame numbers
+        for (int i = FrameData.selectedFrame + 1;
+             i < FrameData.scrollContent.transform.childCount;
+             i++) {
+             FrameData.GetFrameTransform(i).GetChild(1).GetComponent<Text>()
+                .text = "#" + i;
+        }
 
         // Update frame positions
         for (int i = FrameData.selectedFrame;

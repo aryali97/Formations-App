@@ -125,17 +125,12 @@ public static class FrameData
             return -1;
         }
 
-        foreach (Transform inputFieldChild in GetFrameTransform(frameNum)
-                 .GetChild(2)) {
-            if (inputFieldChild.name.Contains("Text")) {
-                string text = inputFieldChild.GetComponent<Text>().text;
-                if (text == "") {
-                    return -1;
-                }
-                return Int32.Parse(text);
-            }
+        string text = GetFrameTransform(frameNum).GetChild(2)
+            .GetComponent<InputField>().text;
+        if (text == "") {
+            return -1;
         }
-        return -1;
+        return Int32.Parse(text);
     }
 
     public static void MovePlayers(int frameNumFrom, long ms) {
