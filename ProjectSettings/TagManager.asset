@@ -11,6 +11,7 @@ TagManager:
   - Stage Preview Content
   - Player Ball
   - Marker Line
+  - Color Picker Button
   layers:
   - Default
   - TransparentFX

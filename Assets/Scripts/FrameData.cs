@@ -75,6 +75,8 @@ public static class FrameData
             var playerPrev = GameObject.Instantiate(Resources.Load<Image>(
                 "Prefabs/Player Preview"));
             playerPrev.transform.SetParent(frame);
+            playerPrev.GetComponent<Image>().color =
+                ball.GetComponent<Renderer>().material.color;
             var playerPrevRect = playerPrev.GetComponent<RectTransform>();
             playerPrevRect.localPosition = new Vector3(
                 ball.transform.position.x * 10,
