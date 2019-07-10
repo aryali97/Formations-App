@@ -15,4 +15,7 @@ public static class GlobalVars {
     public static Color defaultColor = Color.red;
     public static Color hoverColor = new Vector4(1.0f, 0.0f, 0.5f);
     public static Color activeColor = Color.cyan;
+
+    // Selected balls
+    public static HashSet<IDable> selected = new HashSet<IDable>();
 }

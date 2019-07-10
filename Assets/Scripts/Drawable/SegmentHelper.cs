@@ -9,6 +9,16 @@ public static class SegmentHelper {
     public static List<Endpoint> pointsList = new List<Endpoint>();
     public static List<Segment> linesList = new List<Segment>();
 
+    static GameObject stage = GameObject.FindWithTag("Stage");
+    public static float stageXMin =
+        (stage.transform.position.x - stage.transform.localScale.x/2.0f);
+    public static float stageXMax =
+        (stage.transform.position.x + stage.transform.localScale.x/2.0f);
+    public static float stageZMin =
+        (stage.transform.position.z - stage.transform.localScale.z/2.0f);
+    public static float stageZMax =
+        (stage.transform.position.z + stage.transform.localScale.z/2.0f);
+
 
     /*
     Add Segment to dictionaries for other use
@@ -206,6 +216,8 @@ public static class SegmentHelper {
                 }
             }
         }
+        closestPoint.x = Mathf.Clamp(closestPoint.x, stageXMin, stageXMax);
+        closestPoint.y = Mathf.Clamp(closestPoint.y, stageZMin, stageZMax);
         return closestPoint;
     }
 

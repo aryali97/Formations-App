@@ -95,6 +95,7 @@ public class DrawingScript : MonoBehaviour {
     }
 
     void OnMouseDown() {
+        PlayerSelect.UnselectAll();
         /*
         if (!drawnLinesToggle.isOn) {
             shouldDraw = false;

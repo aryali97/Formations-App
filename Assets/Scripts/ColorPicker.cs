@@ -33,7 +33,6 @@ public class ColorPicker : MonoBehaviour, IPointerClickHandler
         int r = HexToDec(hex.Substring(0, 2));
         int g = HexToDec(hex.Substring(2, 2));
         int b = HexToDec(hex.Substring(4, 2));
-        Debug.Log(new Vector4(r, g, b, a));
         return new Color32(
             Convert.ToByte(r),
             Convert.ToByte(g),
@@ -44,7 +43,6 @@ public class ColorPicker : MonoBehaviour, IPointerClickHandler
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Starting");
         pickerMap = new Dictionary<int, Dictionary<int, string>>(); 
         
         Dictionary<int, string> mag1 = new Dictionary<int, string>();
@@ -108,12 +106,6 @@ public class ColorPicker : MonoBehaviour, IPointerClickHandler
         pickerMap[4] = mag4;
     }
 
-    public void PickColor() {
-        Debug.Log(Input.mousePosition);
-        Debug.Log(GameObject.FindWithTag("Color Picker Button")
-                  .GetComponent<RectTransform>().anchoredPosition);
-    }
-
     public void OnPointerClick(PointerEventData ped) {
         Vector2 localCursor;
         if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(GetComponent<RectTransform>(), ped.position, ped.pressEventCamera, out localCursor))
@@ -125,23 +117,28 @@ public class ColorPicker : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-        Renderer ballRend = GameObject.FindWithTag("Player Ball").GetComponent<Renderer>();
         int magSect = (int)(scaledP.magnitude/0.20f);
         float ang = Vector2.SignedAngle(scaledP, new Vector2(0, 1.0f));
         int angSect = 1 + (int)(ang/30.0f);
         if (ang < 0) {
             angSect = 12 + (int)(ang/30.0f);
         }
+
+        Color newColor;
         if (magSect == 0) {
             if (ang > 0) {
-                ballRend.material.color = Color.black; 
+                newColor = Color.black; 
             } else {
-                ballRend.material.color = Color.white; 
+                newColor = Color.white; 
             }
-            FrameData.UpdateBallsInFrame(FrameData.selectedFrame);
-            return;
+        } else {
+            newColor = HexToColor(pickerMap[magSect][angSect]);
         }
-        ballRend.material.color = HexToColor(pickerMap[magSect][angSect]);
+
+        foreach (IDable idable in GlobalVars.selected) {
+            Renderer ballRend = idable.GetComponent<Renderer>();
+            ballRend.material.color = newColor;
+        }
         FrameData.UpdateBallsInFrame(FrameData.selectedFrame);
     }
 }

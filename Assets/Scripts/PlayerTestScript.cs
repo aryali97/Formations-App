@@ -38,16 +38,20 @@ public class PlayerTestScript : MonoBehaviour {
 
     // Delete velocity/force when let go
     void OnMouseUp() {
-        rb.velocity = Vector3.zero;
+        foreach (IDable idable in GlobalVars.selected) {
+            idable.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        }
     }
 
     // Called right before physics
     void FixedUpdate() {
+        /*
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
         // TODO: Should remove x,z force probably
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
         rb.AddForce(movement * speed);
+        */
     }
 }
