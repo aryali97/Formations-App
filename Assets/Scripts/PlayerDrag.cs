@@ -29,6 +29,30 @@ public class PlayerDrag : MonoBehaviour {
         }
     }
 
+    Vector3 BorderClampOffset(Vector3 pos) {
+        float xMinOffset = 0.0f;
+        float xMaxOffset = 0.0f;
+        float zMinOffset = 0.0f;
+        float zMaxOffset = 0.0f;
+
+        foreach (IDable idable in GlobalVars.selected) {
+            xMinOffset = Math.Max(xMinOffset,
+                (transform.position - idable.transform.position).x);
+            xMaxOffset = Math.Max(xMaxOffset,
+                (idable.transform.position - transform.position).x);
+            zMinOffset = Math.Max(zMinOffset,
+                (transform.position - idable.transform.position).z);
+            zMaxOffset = Math.Max(zMaxOffset,
+                (idable.transform.position - transform.position).z);
+        }
+
+        pos.x = Mathf.Clamp(pos.x, SegmentHelper.stageXMin + xMinOffset,
+                                   SegmentHelper.stageXMax - xMaxOffset);
+        pos.z = Mathf.Clamp(pos.z, SegmentHelper.stageZMin + zMinOffset,
+                                   SegmentHelper.stageZMax - zMaxOffset);
+        return (pos - transform.position);
+    }
+
     void OnMouseDrag() {
         Plane plane = new Plane(Vector3.up, new Vector3(0, y, 0));
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -93,8 +117,10 @@ public class PlayerDrag : MonoBehaviour {
                 Debug.Log("Snap offset is: " + (snapOffset + offset));
             }
         }
+        var finalOffset = BorderClampOffset(
+            transform.position +  offset + snapOffset);
         foreach (IDable idable in GlobalVars.selected) {
-            var selNewPos = idable.transform.position + offset + snapOffset;
+            var selNewPos = idable.transform.position + finalOffset;
             selNewPos.y = y;
             idable.transform.position = selNewPos;
             var rb = idable.GetComponent<Rigidbody>();
