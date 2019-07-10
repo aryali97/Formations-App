@@ -179,7 +179,6 @@ public static class SegmentHelper {
         float bestDist = snapDist;
         Vector2 closestPoint = point;
         List<int> snapLineIndex = new List<int>();
-        //TODO: Change if grid line number changes
         Toggle linesToggle = GameObject.FindWithTag("Shown Drawn Lines Toggle").
             GetComponent<Toggle>();
         int markerCount = GlobalVars.horizSecs + GlobalVars.vertSecs - 2;

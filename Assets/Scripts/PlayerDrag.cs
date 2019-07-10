@@ -12,10 +12,12 @@ public class PlayerDrag : MonoBehaviour {
     private Toggle snapToggle;
     private Vector3 centOffset;
 
+    private float lastSpace;
+
 	// Use this for initialization
 	void Start () {
 	    snapToggle = GameObject.Find("Snap Toggle").GetComponent<Toggle>();	
-        snapDist = 0.3f;
+        snapDist = 0.4f;
         centOffset = Vector3.negativeInfinity;
 	}
 
@@ -39,25 +41,51 @@ public class PlayerDrag : MonoBehaviour {
             return;
         }
 
-
-
         var newPos = ray.GetPoint(distance) + centOffset;
         var offset = newPos - transform.position;
         offset.y = 0;
+        Vector3 snapOffset = Vector3.zero;
+
+        GlobalVars.debugSelectSnap = false;
         if (snapToggle.isOn) {
             Vector3 bestOffset = Vector3.negativeInfinity;
+            if (Input.GetKey(KeyCode.Space) && (lastSpace == null || Time.time - lastSpace > 0.5f)) {
+                lastSpace = Time.time;
+                GlobalVars.debugSelectSnap = true;
+            }
             foreach (IDable idable in GlobalVars.selected) {
+                if (GlobalVars.debugSelectSnap) {
+                    Debug.Log("Debugging: " + idable.transform.name);
+                }
                 var adjPos = idable.transform.position + offset;
                 var snappedPos = SegmentHelper.SnapToLines(adjPos, snapDist);
-                var newOffset = snappedPos - idable.transform.position;
-                if (newOffset.magnitude < bestOffset.magnitude) {
+                var newOffset = snappedPos - adjPos;
+                if (GlobalVars.debugSelectSnap) {
+                    if (snappedPos == adjPos) {
+                        Debug.Log("Offset is zero");
+                    } else {
+                        Debug.Log("Offset is NOT zero");
+                        Debug.Log(newOffset);
+                    }
+                }
+                Debug.Log(bestOffset.magnitude);
+                if (snappedPos != adjPos && newOffset.magnitude < bestOffset.magnitude) {
                     bestOffset = newOffset;
+                } 
+                if (GlobalVars.debugSelectSnap) {
+                    Debug.Log("Best offset for " + idable.transform.name +
+                              ": " + bestOffset);
                 }
             }
-            offset = bestOffset;
+            if (bestOffset.x != float.NegativeInfinity) {
+                snapOffset = bestOffset;
+            }
+            if (GlobalVars.debugSelectSnap) {
+                Debug.Log("Snap offset is: " + (snapOffset + offset));
+            }
         }
         foreach (IDable idable in GlobalVars.selected) {
-            var selNewPos = idable.transform.position + offset;
+            var selNewPos = idable.transform.position + offset + snapOffset;
             selNewPos.y = y;
             idable.transform.position = selNewPos;
             var rb = idable.GetComponent<Rigidbody>();
