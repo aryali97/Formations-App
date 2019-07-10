@@ -19,10 +19,6 @@ public class PlayerDrag : MonoBehaviour {
         centOffset = Vector3.negativeInfinity;
 	}
 
-    void OnMouseDown() {
-        PlayerSelect.ClickHandler(gameObject);
-    }
-
     void OnMouseDrag() {
         Plane plane = new Plane(Vector3.up, new Vector3(0, y, 0));
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
