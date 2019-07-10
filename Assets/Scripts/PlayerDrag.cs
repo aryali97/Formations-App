@@ -21,6 +21,14 @@ public class PlayerDrag : MonoBehaviour {
         centOffset = Vector3.negativeInfinity;
 	}
 
+    void OnMouseDown() {
+        var selected = GameObject.FindWithTag("Drawing Pane")
+            .GetComponent<DrawingScript>().selected;
+        if (selected != null) {
+            selected.Unselect();
+        }
+    }
+
     void OnMouseDrag() {
         Plane plane = new Plane(Vector3.up, new Vector3(0, y, 0));
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -46,21 +54,23 @@ public class PlayerDrag : MonoBehaviour {
         offset.y = 0;
         Vector3 snapOffset = Vector3.zero;
 
-        GlobalVars.debugSelectSnap = false;
+        bool debugSelectSnap = false;
         if (snapToggle.isOn) {
             Vector3 bestOffset = Vector3.negativeInfinity;
-            if (Input.GetKey(KeyCode.Space) && (lastSpace == null || Time.time - lastSpace > 0.5f)) {
+            if (GlobalVars.debugSelectSnapFlag && 
+                Input.GetKey(KeyCode.Space) && 
+                (lastSpace == null || Time.time - lastSpace > 0.5f)) {
                 lastSpace = Time.time;
-                GlobalVars.debugSelectSnap = true;
+                debugSelectSnap = true;
             }
             foreach (IDable idable in GlobalVars.selected) {
-                if (GlobalVars.debugSelectSnap) {
+                if (debugSelectSnap) {
                     Debug.Log("Debugging: " + idable.transform.name);
                 }
                 var adjPos = idable.transform.position + offset;
                 var snappedPos = SegmentHelper.SnapToLines(adjPos, snapDist);
                 var newOffset = snappedPos - adjPos;
-                if (GlobalVars.debugSelectSnap) {
+                if (debugSelectSnap) {
                     if (snappedPos == adjPos) {
                         Debug.Log("Offset is zero");
                     } else {
@@ -68,11 +78,10 @@ public class PlayerDrag : MonoBehaviour {
                         Debug.Log(newOffset);
                     }
                 }
-                Debug.Log(bestOffset.magnitude);
                 if (snappedPos != adjPos && newOffset.magnitude < bestOffset.magnitude) {
                     bestOffset = newOffset;
                 } 
-                if (GlobalVars.debugSelectSnap) {
+                if (debugSelectSnap) {
                     Debug.Log("Best offset for " + idable.transform.name +
                               ": " + bestOffset);
                 }
@@ -80,7 +89,7 @@ public class PlayerDrag : MonoBehaviour {
             if (bestOffset.x != float.NegativeInfinity) {
                 snapOffset = bestOffset;
             }
-            if (GlobalVars.debugSelectSnap) {
+            if (debugSelectSnap) {
                 Debug.Log("Snap offset is: " + (snapOffset + offset));
             }
         }
@@ -97,5 +106,12 @@ public class PlayerDrag : MonoBehaviour {
 
     void OnMouseUp() {
         centOffset = Vector3.negativeInfinity;
+    }
+
+    void Update() {
+        if (transform.position.y < -10.0f) {
+            transform.position = new Vector3(0, 5.0f, 0);
+            PlayerSelect.Unselect(gameObject);
+        }
     }
 }

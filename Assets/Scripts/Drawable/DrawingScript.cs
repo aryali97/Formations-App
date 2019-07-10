@@ -292,11 +292,14 @@ public class DrawingScript : MonoBehaviour {
     }
 
     void UnselectHandler() {
-        if (!Input.GetKey(KeyCode.Escape) || selected == null) {
+        if (!Input.GetKey(KeyCode.Escape)) {
             return;
         }
-        selected.Unselect();
-        selected = null;
+        PlayerSelect.UnselectAll();
+        if (selected != null) {
+            selected.Unselect();
+            selected = null;
+        }
     }
 
     void DeleteHandler() {

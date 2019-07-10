@@ -29,6 +29,7 @@ public class Drawable : IDable
     }
 
     public void Unselect() {
+        controller.selected = null;
         GetComponent<Renderer>().material.color = GlobalVars.defaultColor;
         selected = false;
     }

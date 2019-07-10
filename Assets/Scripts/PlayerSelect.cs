@@ -78,16 +78,13 @@ public class PlayerSelect : MonoBehaviour
         if (GlobalVars.selected.Contains(GetComponent<IDable>()) &&
             transform.position.y == 1.0f &&
             alreadySelected) {
-            Debug.Log("In mouse up first if");
             if (Input.GetKey(KeyCode.LeftShift) ||
                 Input.GetKey(KeyCode.RightShift)) {
                 Unselect(gameObject);
             } else if ((Time.time - downTime) < 0.2f) {
-                Debug.Log("Unselect all not working");
+                // Short press so select only this player
                 UnselectAll();
                 Select(gameObject);
-            } else {
-                Debug.Log("Time elapsed: " + (Time.time - downTime));
             }
         }
     }

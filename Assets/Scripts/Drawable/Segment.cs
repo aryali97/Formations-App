@@ -40,8 +40,10 @@ public class Segment : Drawable {
         // Determine whether to snap lines or not
         var ep1Pos = points.Item1.transform.position + offset;
         var ep2Pos = points.Item2.transform.position + offset;
-        var snapEp1Pos = SegmentHelper.SnapToLines(ep1Pos, snapDist, id);
-        var snapEp2Pos = SegmentHelper.SnapToLines(ep2Pos, snapDist, id);
+        HashSet<int> omitIds = new HashSet<int>();
+        omitIds.Add(id);
+        var snapEp1Pos = SegmentHelper.SnapToLines(ep1Pos, snapDist, omitIds);
+        var snapEp2Pos = SegmentHelper.SnapToLines(ep2Pos, snapDist, omitIds);
         Vector3 snapOffset = Vector3.zero;
         if (snapEp1Pos != ep1Pos && snapEp2Pos != ep2Pos) {
             if (Vector3.Distance(snapEp1Pos, ep1Pos) <
