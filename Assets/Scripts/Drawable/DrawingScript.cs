@@ -96,97 +96,12 @@ public class DrawingScript : MonoBehaviour {
 
     void OnMouseDown() {
         PlayerSelect.UnselectAll();
-        /*
-        if (!drawnLinesToggle.isOn) {
-            shouldDraw = false;
-            return;
-        }
-
-        Plane epplane = new Plane(
-            Vector3.up,
-            new Vector3(0, drawingPlaneY, 0));
-        Vector3 epplanepoint = ScreenToPlane(epplane);
-        RaycastHit2D hit = Physics2D.Raycast(epplanepoint, Vector2.zero);
-        if (hit && hit.collider.name.Contains("Endpoint")) {
-            shouldDraw = Vector3.Distance(hit.transform.position, epplanepoint) > 1.0f;
-        } else {
-            shouldDraw = true;
-        }
-        if (shouldDraw) {
-            start = ScreenToPlane(drawingPlane);
-        }
-        */
     }
 
     void OnMouseDrag() {
-        /*
-        if (!shouldDraw) {
-            return;
-        }
-        Vector3 end = ScreenToPlane(drawingPlane);
-        if (end == start) {
-            return;
-        }
-        Vector2 end2d = SegmentHelper.SnapToLines(new Vector2(end.x, end.z), 0.3f);
-        end = new Vector3(end2d.x, end.y, end2d.y);
-        Vector3 mid = (end + start)/2.0f;
-        float dist = (float)Math.Sqrt(
-            Math.Pow(start.x - end.x, 2) +
-            Math.Pow(start.z - end.z, 2));
-        float angle = Mathf.Atan2(
-            end.x - start.x,
-            end.z - start.z) * Mathf.Rad2Deg;
-        if (!drawingLine) {
-            Endpoint startEp =
-                Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
-            drawingLine = true;
-            Endpoint endEp =
-                Instantiate(epTemplate, start, Quaternion.Euler(0, 0, 0));
-            endPoint = endEp.transform;
-            currentLine = 
-                Instantiate(lineTemplate, mid, Quaternion.Euler(0, angle, 0));
-            SegmentHelper.AddSegmentToDicts(startEp, endEp, currentLine);
-        }
-        endPoint.position = end;
-        currentLine.transform.position = mid;
-        currentLine.transform.rotation = Quaternion.Euler(0, angle, 0);
-        currentLine.transform.localScale = new Vector3(
-            currentLine.transform.localScale.x,
-            currentLine.transform.localScale.y,
-            dist/10.0f);
-        */
     }
 
     void OnMouseUp() {
-        /*
-        if (!shouldDraw) {
-            return;
-        }
-        Vector3 end = ScreenToPlane(drawingPlane);
-        if (end != start) {
-            if (end.x == start.x) {
-                SegmentHelper.snapLines.Add(
-                    new LineRepr(start.x, start.y, end.y));
-                SegmentHelper.snapLines.Last().lineId = currentLine.id;
-            } else {
-                float m = (end.z - start.z)/(end.x - start.x);
-                // Y = mX + b
-                // b = Y - mX
-                float b = end.z - m * end.x;
-                SegmentHelper.snapLines.Add(
-                    new LineRepr(
-                        m,
-                        b,
-                        new Vector2(start.x, start.z),
-                        new Vector2(end.x, end.z)));
-                SegmentHelper.snapLines.Last().lineId = currentLine.id;
-            }
-            drawingLine = false;
-            endPoint = null;
-            //currentLine = null;
-        }
-        currentLine = null;
-        */
     }
 
 	// Update is called once per frame
@@ -265,12 +180,6 @@ public class DrawingScript : MonoBehaviour {
             startEp.connects.Add(new Tuple<Endpoint, Segment>(endEp, currentLine)); 
             endEp.connects.Add(new Tuple<Endpoint, Segment>(startEp, currentLine));
             currentLine.points = new Tuple<Endpoint, Endpoint>(startEp, endEp);
-            /*
-            Endpoint endEp = null, startEp = null;
-            SegmentHelper.CreateSegment(start, end, startEp, endEp, currentLine); 
-            endPoint = endEp.transform;
-            Debug.Log(endEp);
-            */
             drawingLine = true;            
         }
         endPoint.position = end;
