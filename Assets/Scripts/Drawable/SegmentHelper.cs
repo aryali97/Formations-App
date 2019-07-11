@@ -76,8 +76,8 @@ public static class SegmentHelper {
     public static LineRepr CreateFromSegment(Segment line) {
         LineRepr repr;
         float halfLength = line.transform.localScale.z * 5.0f;
-        if (line.transform.rotation.eulerAngles.y != 90 && 
-            line.transform.rotation.eulerAngles.y != 270) {
+        if (line.transform.rotation.eulerAngles.y != 0 && 
+            line.transform.rotation.eulerAngles.y != 180) {
             float p1x = (float)(Math.Sin(line.transform.rotation.eulerAngles.y * Mathf.Deg2Rad))
                 * halfLength + line.transform.position.x;
             float p1z = (float)(Math.Cos(line.transform.rotation.eulerAngles.y * Mathf.Deg2Rad))
@@ -86,6 +86,7 @@ public static class SegmentHelper {
             float p2z = line.transform.position.z - (p1z - line.transform.position.z);
             float m = (p2z - p1z)/(p2x - p1x);
             float b = p2z - m * p2x;
+            Debug.Log("M: " + m + ", B: " + b);
             repr = new LineRepr(
                 m,
                 b,

@@ -169,7 +169,23 @@ public class DrawingScript : MonoBehaviour {
         if (end == start) {
             return;
         }
-        Vector2 end2d = SegmentHelper.SnapToLines(new Vector2(end.x, end.z), 0.3f);
+        
+        Vector2 preSnapEnd2d = new Vector2(end.x, end.z);
+        if (Input.GetKey(KeyCode.LeftShift) ||
+            Input.GetKey(KeyCode.RightShift)) {
+            LineRepr horizLine = new LineRepr(0, start.z);
+            LineRepr vertLine = new LineRepr(start.x);
+            Vector2 horizClosest = horizLine.ClosestPoint(preSnapEnd2d);
+            Vector2 vertClosest = vertLine.ClosestPoint(preSnapEnd2d);
+            if (Vector2.Distance(horizClosest, preSnapEnd2d) <
+                Vector2.Distance(vertClosest, preSnapEnd2d)) {
+                preSnapEnd2d = horizClosest;
+            } else {
+                preSnapEnd2d = vertClosest;
+            }
+        }
+
+        Vector2 end2d = SegmentHelper.SnapToLines(preSnapEnd2d, 0.3f);
         end = new Vector3(end2d.x, end.y, end2d.y);
         if (!drawingLine) {
             Vector3 mid = (end + start)/2.0f;
