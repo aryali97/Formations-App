@@ -81,7 +81,12 @@ public class DrawingScript : MonoBehaviour {
         lineTemplate = Resources.Load<Segment>("Prefabs/Drawn Line");
 	}
 
-    Vector3 ScreenToPlane(Plane plane) { Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    public static Vector3 ScreenToPlane(Plane plane,
+        Vector3 mousePos = default(Vector3)) {
+        if (mousePos == Vector3.zero) {
+            mousePos = Input.mousePosition;
+        }
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
         float distance;
         if (plane.Raycast(ray, out distance)) {
             return ray.GetPoint(distance);        
@@ -95,7 +100,7 @@ public class DrawingScript : MonoBehaviour {
     }
 
     void OnMouseDown() {
-        PlayerSelect.UnselectAll();
+        //PlayerSelect.UnselectAll();
     }
 
     void OnMouseDrag() {
@@ -112,6 +117,10 @@ public class DrawingScript : MonoBehaviour {
 	}
 
     void MouseRightHandler() {
+        var eventSystem = GameObject.Find("EventSystem")
+            .GetComponent<EventSystem>();
+        if (eventSystem.IsPointerOverGameObject()) return;
+        if (eventSystem.currentSelectedGameObject != null) return;
         if (Input.GetMouseButton(1)) {
             if (!rightClickDownInPrev) {
                 rightMouseDownPos = Input.mousePosition;
