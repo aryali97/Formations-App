@@ -86,7 +86,6 @@ public static class SegmentHelper {
             float p2z = line.transform.position.z - (p1z - line.transform.position.z);
             float m = (p2z - p1z)/(p2x - p1x);
             float b = p2z - m * p2x;
-            Debug.Log("M: " + m + ", B: " + b);
             repr = new LineRepr(
                 m,
                 b,
