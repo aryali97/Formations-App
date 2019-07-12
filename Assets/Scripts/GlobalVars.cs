@@ -17,6 +17,6 @@ public static class GlobalVars {
     public static Color activeColor = Color.cyan;
 
     // Selected balls
-    public static bool debugSelectSnapFlag = false;
+    public static bool debugSelectSnapFlag = true;
     public static HashSet<IDable> selected = new HashSet<IDable>();
 }

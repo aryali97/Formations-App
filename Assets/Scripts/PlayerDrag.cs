@@ -81,6 +81,8 @@ public class PlayerDrag : MonoBehaviour {
         bool debugSelectSnap = false;
         if (snapToggle.isOn) {
             Vector3 bestOffset = Vector3.negativeInfinity;
+            // Fake max
+            int bestDimSnap = 10;
             if (GlobalVars.debugSelectSnapFlag && 
                 Input.GetKey(KeyCode.Space) && 
                 (lastSpace == null || Time.time - lastSpace > 0.5f)) {
@@ -92,7 +94,11 @@ public class PlayerDrag : MonoBehaviour {
                     Debug.Log("Debugging: " + idable.transform.name);
                 }
                 var adjPos = idable.transform.position + offset;
-                var snappedPos = SegmentHelper.SnapToLines(adjPos, snapDist);
+                int dimSnap;
+                var snappedPos = SegmentHelper.SnapToLines(
+                    adjPos,
+                    snapDist,
+                    out dimSnap);
                 var newOffset = snappedPos - adjPos;
                 if (debugSelectSnap) {
                     if (snappedPos == adjPos) {
@@ -102,9 +108,16 @@ public class PlayerDrag : MonoBehaviour {
                         Debug.Log(newOffset);
                     }
                 }
-                if (snappedPos != adjPos && newOffset.magnitude < bestOffset.magnitude) {
-                    bestOffset = newOffset;
-                } 
+                if (snappedPos != adjPos) {
+                    if (newOffset.magnitude < bestOffset.magnitude) {
+                        bestOffset = newOffset;
+                        bestDimSnap = dimSnap;
+                    } else if (Math.Abs(newOffset.magnitude - bestOffset.magnitude)
+                        < 0.05f && bestDimSnap > dimSnap) {
+                        bestOffset = newOffset;
+                        bestDimSnap = dimSnap;
+                    }
+                }
                 if (debugSelectSnap) {
                     Debug.Log("Best offset for " + idable.transform.name +
                               ": " + bestOffset);

@@ -219,4 +219,63 @@ public static class SegmentHelper {
         closestPoint.y = Mathf.Clamp(closestPoint.y, stageZMin, stageZMax);
         return closestPoint;
     }
+
+    public static Vector3 SnapToLines(Vector3 point,
+                                      float snapDist,
+                                      out int dimSnap,
+                                      HashSet<int> omitIds = null) {
+        var snap2d = SnapToLines(V3toV2(point), snapDist, out dimSnap, omitIds);
+        return new Vector3(snap2d.x, point.y, snap2d.y);
+    }
+
+    public static Vector2 SnapToLines(Vector2 point,
+                                      float snapDist,
+                                      out int dimSnap,
+                                      HashSet<int> omitIds = null) {
+        dimSnap = 0;
+        float bestDist = snapDist;
+        Vector2 closestPoint = point;
+        List<int> snapLineIndex = new List<int>();
+        Toggle linesToggle = GameObject.FindWithTag("Shown Drawn Lines Toggle").
+            GetComponent<Toggle>();
+        int markerCount = GlobalVars.horizSecs + GlobalVars.vertSecs - 2;
+        int endCount = linesToggle.isOn ? snapLines.Count : markerCount;
+        for (int i = 0; i < endCount; ++i) {
+            if (omitIds != null && omitIds.Contains(snapLines[i].lineId)) {
+                continue;
+            }
+            Vector2 newP = snapLines[i].ClosestPoint(point);
+            float dist = Vector2.Distance(newP, point);
+            if (dist < bestDist) {
+                dimSnap = 1;
+                bestDist = dist;
+                closestPoint = newP;
+                snapLineIndex.Add(i);
+            }
+        }
+        bestDist = snapDist;
+        for (int i = 0; i < endCount; ++i) {
+            if (omitIds != null && omitIds.Contains(snapLines[i].lineId)) {
+                continue;
+            }
+            for (int j = i + 1; j < endCount; ++j) {
+                if (omitIds != null && omitIds.Contains(snapLines[j].lineId)) {
+                    continue;
+                }
+                Vector2 newP = new Vector2(0, 0);
+                if (LineRepr.Intersection(
+                        snapLines[i],
+                        snapLines[j],
+                        ref newP) &&
+                    Vector2.Distance(point, newP) < bestDist) {
+                    dimSnap = 2;
+                    bestDist = snapDist;
+                    closestPoint = newP;
+                }
+            }
+        }
+        closestPoint.x = Mathf.Clamp(closestPoint.x, stageXMin, stageXMax);
+        closestPoint.y = Mathf.Clamp(closestPoint.y, stageZMin, stageZMax);
+        return closestPoint;
+    }
 }

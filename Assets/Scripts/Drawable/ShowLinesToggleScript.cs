@@ -20,13 +20,12 @@ public class ShowLinesToggleScript : MonoBehaviour {
 	}
 
     void Toggled() {
-        Debug.Log("TOGGLED " + toggle.isOn);
         bool beActive = toggle.isOn;
         foreach (Segment line in SegmentHelper.linesList) {
-            line.gameObject.active = beActive;
+            line.gameObject.SetActive(beActive);
         }
         foreach (Endpoint point in SegmentHelper.pointsList) {
-            point.gameObject.active = beActive;
+            point.gameObject.SetActive(beActive);
         }
     }
 }
