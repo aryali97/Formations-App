@@ -82,7 +82,7 @@ public class PlayerDrag : MonoBehaviour {
         if (snapToggle.isOn) {
             Vector3 bestOffset = Vector3.negativeInfinity;
             // Fake max
-            int bestDimSnap = 10;
+            int bestDimSnap = 0;
             if (GlobalVars.debugSelectSnapFlag && 
                 Input.GetKey(KeyCode.Space) && 
                 (lastSpace == null || Time.time - lastSpace > 0.5f)) {
@@ -106,18 +106,21 @@ public class PlayerDrag : MonoBehaviour {
                     } else {
                         Debug.Log("Offset is NOT zero");
                         Debug.Log(newOffset);
+                        Debug.Log(dimSnap);
                     }
                 }
+                float dimBreaker = 0.15f;
                 if (snappedPos != adjPos) {
-                    if (newOffset.magnitude < bestOffset.magnitude) {
+                    if (newOffset.magnitude < bestOffset.magnitude &&
+                        ((bestOffset.magnitude - newOffset.magnitude) > dimBreaker ||
+                         bestDimSnap <= dimSnap)) {
                         bestOffset = newOffset;
                         bestDimSnap = dimSnap;
                     } else if (Math.Abs(newOffset.magnitude - bestOffset.magnitude)
-                        < 0.05f && bestDimSnap > dimSnap) {
+                        < dimBreaker && bestDimSnap < dimSnap) {
                         bestOffset = newOffset;
                         bestDimSnap = dimSnap;
-                    }
-                }
+                    }                 }
                 if (debugSelectSnap) {
                     Debug.Log("Best offset for " + idable.transform.name +
                               ": " + bestOffset);
